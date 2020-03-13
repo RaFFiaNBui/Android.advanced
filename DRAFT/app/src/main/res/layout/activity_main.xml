@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?><!-- это макет для портретной ориентации -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <!-- в портретной ориентации у activity только один фрагмент выбора города-->
+    <fragment
+        android:id="@+id/first_fragment"
+        android:name="com.example.ablesson_1.MainFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

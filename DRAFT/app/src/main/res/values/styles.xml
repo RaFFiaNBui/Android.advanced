@@ -1,0 +1,46 @@
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="myTextColor">@color/colorBlack</item>
+        <item name="myTextColor2">@color/colorGray</item>
+    </style>
+
+    <!-- Реализация темной темы -->
+    <style name="DarkTheme" parent="Theme.MaterialComponents">
+        <item name="myTextColor">@color/colorWhite</item>
+        <item name="colorAccent">@color/colorBlue</item>
+        <item name="myTextColor2">@color/colorWhite</item>
+        <item name="android:windowBackground">@color/colorDarkThemeBackground</item>
+        <item name="colorPrimary">@color/colorBlue</item>
+    </style>
+
+    <!-- Реализация стилей для обеих тем -->
+    <style name="MyTextStyle">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">?attr/myTextColor</item>
+    </style>
+
+    <style name="MyTextStyleSerifBold" parent="MyTextStyle">
+        <item name="android:fontFamily">serif</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="MyItemStyle" parent="MyTextStyleSerifBold">
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="MyMailStyle" parent="MyTextStyleSerifBold">
+        <item name="android:textColor">#0000FF</item>
+    </style>
+
+    <style name="MyItemWeekStyle">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">?attr/myTextColor</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+</resources>

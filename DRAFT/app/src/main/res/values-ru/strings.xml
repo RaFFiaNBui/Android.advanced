@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SRS Weather</string>
+
+    <string name="weather_forecast">Выберите город</string>
+    <string name="enter_city">Введите город</string>
+    <string name="enter1">Ввод</string>
+
+    <string name="image">Картинка</string>
+    <string name="divided"> / </string>
+    <string name="_19">+19</string>
+    <string name="humidity">Влажность</string>
+    <string name="percent">%</string>
+    <string name="sunrise">Восход</string>
+    <string name="sunset">Закат</string>
+    <string name="pressure">Давление</string>
+    <string name="mmhg_st">мм.рт.ст</string>
+    <string name="wind_speed">Ветер</string>
+    <string name="m_s">м/с</string>
+
+    <string name="about_developers">О разработчиках</string>
+    <string name="settings">Настройки</string>
+    <string name="black_theme">Темная тема</string>
+    <string name="sunrise_sunset">Восход / Закат</string>
+    <string name="save">Сохранить</string>
+
+    <string name="developer">Самарин Роман Сергеевич</string>
+    <string name="my_mail"><u>raffian_bui@mail.ru</u></string>
+    <string name="error">Ошибка!</string>
+    <string name="city_not_found">Город не найден</string>
+</resources>
