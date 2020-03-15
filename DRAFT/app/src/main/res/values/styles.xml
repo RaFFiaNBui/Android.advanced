@@ -7,6 +7,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="myTextColor">@color/colorBlack</item>
         <item name="myTextColor2">@color/colorGray</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
     <!-- Реализация темной темы -->
@@ -15,7 +16,8 @@
         <item name="colorAccent">@color/colorBlue</item>
         <item name="myTextColor2">@color/colorWhite</item>
         <item name="android:windowBackground">@color/colorDarkThemeBackground</item>
-        <item name="colorPrimary">@color/colorBlue</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
     <!-- Реализация стилей для обеих тем -->
@@ -42,5 +44,10 @@
         <item name="android:textColor">?attr/myTextColor</item>
         <item name="android:gravity">center</item>
     </style>
+
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
 </resources>

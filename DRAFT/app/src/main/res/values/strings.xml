@@ -27,4 +27,6 @@
     <string name="my_mail"><u>raffian_bui@mail.ru</u></string>
     <string name="error">Error!</string>
     <string name="city_not_found">City not found</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>

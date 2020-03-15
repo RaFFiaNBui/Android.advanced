@@ -1,7 +1,5 @@
 package com.example.ablesson_1;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,10 +8,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TableRow;
 
-public class BaseActivity extends AppCompatActivity implements Constants {
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+
+import com.google.android.material.navigation.NavigationView;
+
+public class BaseActivity extends AppCompatActivity implements Constants, NavigationView.OnNavigationItemSelectedListener {
 
     private static final int SETTINGS_CODE = 555;
     private boolean currentThemeIsDark; //true - текущая тема ТЕМНАЯ
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +44,6 @@ public class BaseActivity extends AppCompatActivity implements Constants {
         if (isDarkTheme() != currentThemeIsDark) {
             recreate();
         }
-
         super.onStart();
     }
 
@@ -78,7 +86,6 @@ public class BaseActivity extends AppCompatActivity implements Constants {
         }
         return super.onOptionsItemSelected(item);
     }
-
     //отображение настроек
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -109,6 +116,54 @@ public class BaseActivity extends AppCompatActivity implements Constants {
             boolean tempWind = sharedPref.getBoolean(WIND, true);
             TableRow TRWind = findViewById(R.id.wind_row);
             TRWind.setVisibility(tempWind ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    void initMenu() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.nav_Start) {
+            FragmentManager fm = getSupportFragmentManager();
+            fm.popBackStack();
+        } else if (id == R.id.nav_Settings) {
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivityForResult(intent, SETTINGS_CODE);
+        } else if (id == R.id.nav_history) {
+            /*FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.first_fragment, HistoryFragment.class);
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            ft.commit();*/
+        } else if (id == R.id.nav_Developers) {
+            Intent intentDev = new Intent(this, DevelopersActivity.class);
+            startActivity(intentDev);
+        }
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer != null && drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
         }
     }
 }
