@@ -21,10 +21,9 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <fragment
+    <FrameLayout
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:id="@+id/first_fragment"
-        android:name="com.example.ablesson_1.MainFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
