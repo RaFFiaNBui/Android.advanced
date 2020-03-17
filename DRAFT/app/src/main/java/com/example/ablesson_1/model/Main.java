@@ -1,7 +1,5 @@
 package com.example.ablesson_1.model;
 
-import android.util.Log;
-
 public class Main {
     private float temp;
     private int pressure;

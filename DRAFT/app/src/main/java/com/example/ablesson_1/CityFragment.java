@@ -15,8 +15,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ablesson_1.model.WeatherRequest;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -25,6 +28,38 @@ import static android.content.Context.MODE_PRIVATE;
 public class CityFragment extends Fragment implements Constants {
 
     private String currentCity = "Moscow";
+    private String temp;
+    private static ArrayList<String> citiesList = new ArrayList<>();
+    private static ArrayList<String> temperatureList = new ArrayList<>();
+
+    private TextView currentName;
+    private TextView currentTemperature;
+    private TextView currentHumidity;
+    private TextView sunrise;
+    private TextView sunset;
+    private TextView currentPressure;
+    private TextView windSpeed;
+
+    public interface OnDataLoadedListener {
+        void onLoaded(WeatherRequest weatherRequest);
+    }
+
+    //вешаем лисенер, который будет сетить наши данные после их загрузки
+    private final OnDataLoadedListener onDataLoadedListener = new OnDataLoadedListener() {
+        @Override
+        public void onLoaded(WeatherRequest weatherRequest) {
+            temp = String.format(Locale.getDefault(), "%d", weatherRequest.getMain().getTemp());
+            currentTemperature.setText(temp);
+            currentHumidity.setText(String.format(Locale.getDefault(), "%d", weatherRequest.getMain().getHumidity()));
+            SimpleDateFormat smp = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            sunrise.setText(String.format(Locale.getDefault(), "%s", smp.format(weatherRequest.getSys().getSunrise() * 1000L)));
+            sunset.setText(String.format(Locale.getDefault(), "%s", smp.format(weatherRequest.getSys().getSunset() * 1000L)));
+            currentPressure.setText(String.format(Locale.getDefault(), "%d", weatherRequest.getMain().getPressure()));
+            windSpeed.setText(String.format(Locale.getDefault(), "%d", weatherRequest.getWind().getSpeed()));
+            currentName.setText(String.format(Locale.getDefault(), "%s", weatherRequest.getName()));
+            saveHistory();
+        }
+    };
 
     // Фабричный метод создания фрагмента
     // Фрагменты рекомендуется создавать через фабричные методы.
@@ -42,6 +77,19 @@ public class CityFragment extends Fragment implements Constants {
     Parcel getParcel() {
         Parcel parcel = (Parcel) getArguments().getSerializable(PARCEL);
         return parcel;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Определить какой герб надо показать, и показать его
+        View layout = inflater.inflate(R.layout.fragment_city, container, false);
+        TextView textViewCity = layout.findViewById(R.id.city);
+        changeSettings(layout);
+        Parcel parcel = getParcel();
+        textViewCity.setText(parcel.getCityName());
+        currentCity = parcel.getCityName();
+        return layout;
     }
 
     @Override
@@ -72,23 +120,13 @@ public class CityFragment extends Fragment implements Constants {
         }
         //отображение текущей даты
         setDate(view);
-        //устанавливаем соединение и сетим полученные данные
-        new Connection(view, currentCity);
+        //инициализация текстовых полей
+        init(view);
+        //устанавливаем соединение
+        new Connection(currentCity, onDataLoadedListener);
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Определить какой герб надо показать, и показать его
-        View layout = inflater.inflate(R.layout.fragment_city, container, false);
-        TextView textViewCity = layout.findViewById(R.id.city);
-        changeSettings(layout);
-        Parcel parcel = getParcel();
-        textViewCity.setText(parcel.getCityName());
-        currentCity = parcel.getCityName();
-        return layout;
-    }
-
+    //метод отрисовки необходимых настроек
     private void changeSettings(View v) {
         SharedPreferences sharedPref = getActivity().getSharedPreferences(SHARED_PREFERENCE_KEY, MODE_PRIVATE);
         //отрисовка восхода и заката
@@ -125,5 +163,30 @@ public class CityFragment extends Fragment implements Constants {
         TextView textViewCurrentTime = view.findViewById(R.id.current_time);
         DateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
         textViewCurrentTime.setText(timeFormat.format(currentDate));
+    }
+
+    //инициализация полей
+    private void init(View view) {
+        currentTemperature = view.findViewById(R.id.t_day);
+        currentHumidity = view.findViewById(R.id.humidity);
+        sunrise = view.findViewById(R.id.sunrise);
+        sunset = view.findViewById(R.id.sunset);
+        currentPressure = view.findViewById(R.id.pressure);
+        windSpeed = view.findViewById(R.id.wind);
+        currentName = view.findViewById(R.id.city);
+    }
+
+    //метод сохранения истории
+    private void saveHistory() {
+        citiesList.add(currentCity);
+        temperatureList.add(temp);
+    }
+
+    static ArrayList<String> getCitiesList() {
+        return citiesList;
+    }
+
+    static ArrayList<String> getTemperatureList() {
+        return temperatureList;
     }
 }
