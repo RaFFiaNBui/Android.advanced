@@ -29,8 +29,8 @@ public class CityFragment extends Fragment implements Constants {
 
     private String currentCity = "Moscow";
     private String temp;
-    ArrayList<String> citiesList;
-    ArrayList<String> temperatureList;
+    private static ArrayList<String> citiesList = new ArrayList<>();
+    private static ArrayList<String> temperatureList = new ArrayList<>();
 
     private TextView currentName;
     private TextView currentTemperature;
@@ -39,6 +39,27 @@ public class CityFragment extends Fragment implements Constants {
     private TextView sunset;
     private TextView currentPressure;
     private TextView windSpeed;
+
+    public interface OnDataLoadedListener {
+        void onLoaded(WeatherRequest weatherRequest);
+    }
+
+    //вешаем лисенер, который будет сетить наши данные после их загрузки
+    private final OnDataLoadedListener onDataLoadedListener = new OnDataLoadedListener() {
+        @Override
+        public void onLoaded(WeatherRequest weatherRequest) {
+            temp = String.format(Locale.getDefault(), "%d", weatherRequest.getMain().getTemp());
+            currentTemperature.setText(temp);
+            currentHumidity.setText(String.format(Locale.getDefault(), "%d", weatherRequest.getMain().getHumidity()));
+            SimpleDateFormat smp = new SimpleDateFormat("HH:mm", Locale.getDefault());
+            sunrise.setText(String.format(Locale.getDefault(), "%s", smp.format(weatherRequest.getSys().getSunrise() * 1000L)));
+            sunset.setText(String.format(Locale.getDefault(), "%s", smp.format(weatherRequest.getSys().getSunset() * 1000L)));
+            currentPressure.setText(String.format(Locale.getDefault(), "%d", weatherRequest.getMain().getPressure()));
+            windSpeed.setText(String.format(Locale.getDefault(), "%d", weatherRequest.getWind().getSpeed()));
+            currentName.setText(String.format(Locale.getDefault(), "%s", weatherRequest.getName()));
+            saveHistory();
+        }
+    };
 
     // Фабричный метод создания фрагмента
     // Фрагменты рекомендуется создавать через фабричные методы.
@@ -99,20 +120,13 @@ public class CityFragment extends Fragment implements Constants {
         }
         //отображение текущей даты
         setDate(view);
-        //инициализация текстовых поле
+        //инициализация текстовых полей
         init(view);
         //устанавливаем соединение
-        Connection connection = new Connection(currentCity);
-        if (connection.getWeatherRequest() != null) {
-            //сетим полученные данные
-            displayWeather(connection.getWeatherRequest());
-            //сохраняем историю
-            saveHistory();
-        } else {
-            //alertdialog c исключением
-        }
+        new Connection(currentCity, onDataLoadedListener);
     }
 
+    //метод отрисовки необходимых настроек
     private void changeSettings(View v) {
         SharedPreferences sharedPref = getActivity().getSharedPreferences(SHARED_PREFERENCE_KEY, MODE_PRIVATE);
         //отрисовка восхода и заката
@@ -162,31 +176,17 @@ public class CityFragment extends Fragment implements Constants {
         currentName = view.findViewById(R.id.city);
     }
 
-    //заполнение полей
-    private void displayWeather(WeatherRequest weatherRequest) {
-        temp = String.format(Locale.getDefault(), "%d", weatherRequest.getMain().getTemp());
-        currentTemperature.setText(temp);
-        currentHumidity.setText(String.format(Locale.getDefault(), "%d", weatherRequest.getMain().getHumidity()));
-        SimpleDateFormat smp = new SimpleDateFormat("HH:mm", Locale.getDefault());
-        sunrise.setText(String.format(Locale.getDefault(), "%s", smp.format(weatherRequest.getSys().getSunrise() * 1000L)));
-        sunset.setText(String.format(Locale.getDefault(), "%s", smp.format(weatherRequest.getSys().getSunset() * 1000L)));
-        currentPressure.setText(String.format(Locale.getDefault(), "%d", weatherRequest.getMain().getPressure()));
-        windSpeed.setText(String.format(Locale.getDefault(), "%d", weatherRequest.getWind().getSpeed()));
-        currentName.setText(String.format(Locale.getDefault(), "%s", weatherRequest.getName()));
-    }
     //метод сохранения истории
-    private void saveHistory () {
-        citiesList = new ArrayList<>();
+    private void saveHistory() {
         citiesList.add(currentCity);
-        temperatureList = new ArrayList<>();
         temperatureList.add(temp);
     }
 
-    ArrayList<String> getCitiesList() {
+    static ArrayList<String> getCitiesList() {
         return citiesList;
     }
 
-    ArrayList<String> getTemperatureList() {
+    static ArrayList<String> getTemperatureList() {
         return temperatureList;
     }
 }
