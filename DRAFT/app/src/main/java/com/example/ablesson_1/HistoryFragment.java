@@ -1,6 +1,7 @@
 package com.example.ablesson_1;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,9 +27,14 @@ public class HistoryFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         //подтягиваем наш список городов
-        CityFragment cityFragment = new CityFragment();
-        ArrayList<String> dataCity = cityFragment.getCitiesList();
-        ArrayList<String> dataTemp = cityFragment.getTemperatureList();
+        ArrayList<String> dataCity = CityFragment.getCitiesList();
+        ArrayList<String> dataTemp = CityFragment.getTemperatureList();
+        if(dataCity.size() == 0){
+            dataCity.add("Ваш список истории пуст");
+            dataTemp.add(" ");
+        }
+        Log.d("MyLog", String.valueOf(dataCity));
+        Log.d("MyLog", String.valueOf(dataTemp));
         //инициализируем RecyclerView
         RecyclerView recyclerView = view.findViewById(R.id.history_recycler_view);
         //подсказываем, что наш список конечный
@@ -41,6 +47,5 @@ public class HistoryFragment extends Fragment {
         HistoryAdapter historyAdapter = new HistoryAdapter(dataCity, dataTemp);
         //устанавливаем нашему списку адаптер
         recyclerView.setAdapter(historyAdapter);
-
     }
 }
