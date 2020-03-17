@@ -8,8 +8,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.snackbar.Snackbar;
-
 import java.util.ArrayList;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryHolder> {
@@ -18,11 +16,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
     private ArrayList<String> dataTemp;
 
     HistoryAdapter(ArrayList<String> dataSity, ArrayList<String> dataTemp) {
-
         this.dataCity = dataSity;
         this.dataTemp = dataTemp;
     }
-
 
     @NonNull
     @Override
@@ -33,7 +29,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
 
     @Override
     public void onBindViewHolder(@NonNull HistoryHolder holder, int position) {
-        holder.setData(dataCity.get(position),dataTemp.get(position));
+        holder.setData(dataCity.get(position), dataTemp.get(position));
     }
 
     @Override
