@@ -19,6 +19,7 @@
     <string name="m_s">м/с</string>
 
     <string name="about_developers">О разработчиках</string>
+    <string name="search">Поиск</string>
     <string name="settings">Настройки</string>
     <string name="black_theme">Темная тема</string>
     <string name="sunrise_sunset">Восход / Закат</string>
