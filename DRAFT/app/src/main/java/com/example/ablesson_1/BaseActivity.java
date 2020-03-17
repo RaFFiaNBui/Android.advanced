@@ -11,12 +11,15 @@ import android.widget.TableRow;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 
 public class BaseActivity extends AppCompatActivity implements Constants, NavigationView.OnNavigationItemSelectedListener {
 
@@ -68,6 +71,23 @@ public class BaseActivity extends AppCompatActivity implements Constants, Naviga
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
+        //инициализация пункта меню - Поиск
+        MenuItem search = menu.findItem(R.id.search_bar);
+        //строка поиска
+        final SearchView searchText = (SearchView) search.getActionView();
+        searchText.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            //реакция на окончание ввода поиска
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Snackbar.make(searchText, query, Snackbar.LENGTH_LONG).show();
+                return true;
+            }
+            //Реагирует на нажатие каждой клавиши
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return true;
+            }
+        });
         return true;
     }
 
@@ -134,22 +154,30 @@ public class BaseActivity extends AppCompatActivity implements Constants, Naviga
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
-        int id = item.getItemId();
 
-        if (id == R.id.nav_Start) {
-            FragmentManager fm = getSupportFragmentManager();
-            fm.popBackStack();
-        } else if (id == R.id.nav_Settings) {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivityForResult(intent, SETTINGS_CODE);
-        } else if (id == R.id.nav_history) {
-            /*FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.first_fragment, HistoryFragment.class);
-            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-            ft.commit();*/
-        } else if (id == R.id.nav_Developers) {
-            Intent intentDev = new Intent(this, DevelopersActivity.class);
-            startActivity(intentDev);
+
+        switch (item.getItemId()) {
+            case (R.id.nav_Start) :
+                FragmentManager fm = getSupportFragmentManager();
+                fm.popBackStack();
+                break;
+
+            case (R.id.nav_Settings) :
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivityForResult(intent, SETTINGS_CODE);
+                break;
+
+            case (R.id.nav_history) :
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                HistoryFragment historyFragment = new HistoryFragment();
+                ft.replace(R.id.first_fragment, historyFragment);
+                ft.commit();
+                break;
+
+            case (R.id.nav_Developers) :
+                Intent intentDev = new Intent(this, DevelopersActivity.class);
+                startActivity(intentDev);
+                break;
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
