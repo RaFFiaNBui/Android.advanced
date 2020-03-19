@@ -52,9 +52,8 @@ public class WeekAdapter extends RecyclerView.Adapter<WeekAdapter.RecyclerViewHo
         }
 
         void setData(final String data) {
-
-            textViewDate.setText("22.01");
             textViewDay.setText(data);
+            textViewDate.setText("22.01");
             textViewTDay.setText("+20");
             textViewTNight.setText("+10");
             imageView.setImageResource(R.drawable.t22);

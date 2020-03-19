@@ -3,7 +3,6 @@ package com.example.ablesson_1;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -40,12 +39,6 @@ public class SettingsActivity extends BaseActivity {
     private final View.OnClickListener exitFromSettings = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            SharedPreferences sharedPref = getSharedPreferences(SHARED_PREFERENCE_KEY, MODE_PRIVATE);
-            boolean bool = sharedPref.getBoolean(SUN, true);
-            String string = Boolean.toString(bool);
-            boolean boo222 = checkBoxSun.isChecked();
-            String str = Boolean.toString(boo222);
-            Log.d("fff", string + str);
             Intent result = new Intent();
             setResult(RESULT_OK, result);
             finish();
@@ -94,10 +87,9 @@ public class SettingsActivity extends BaseActivity {
         checkBoxWind.setChecked(sharedPref.getBoolean(WIND, true));
     }
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Toast.makeText(getApplicationContext(), "Настройки сохранены", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), R.string.settings_save, Toast.LENGTH_SHORT).show();
     }
 }

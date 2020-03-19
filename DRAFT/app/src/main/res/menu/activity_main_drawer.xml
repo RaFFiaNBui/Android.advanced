@@ -6,20 +6,20 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_Start"
-            android:title="Начальный экран" />
+            android:title="@string/start_screen" />
         <item
             android:id="@+id/nav_Settings"
-            android:title="Настройки" />
+            android:title="@string/settings" />
         <item
             android:id="@+id/nav_history"
-            android:title="История" />
+            android:title="@string/story" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="@string/communicate">
         <menu>
             <item
                 android:id="@+id/nav_Developers"
-                android:title="Разработчики" />
+                android:title="@string/about_developers" />
         </menu>
     </item>
 

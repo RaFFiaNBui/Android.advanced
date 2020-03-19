@@ -1,7 +1,6 @@
 package com.example.ablesson_1;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,11 +29,9 @@ public class HistoryFragment extends Fragment {
         ArrayList<String> dataCity = CityFragment.getCitiesList();
         ArrayList<String> dataTemp = CityFragment.getTemperatureList();
         if(dataCity.size() == 0){
-            dataCity.add("Ваш список истории пуст");
+            dataCity.add(getString(R.string.story_array_empty));
             dataTemp.add(" ");
         }
-        Log.d("MyLog", String.valueOf(dataCity));
-        Log.d("MyLog", String.valueOf(dataTemp));
         //инициализируем RecyclerView
         RecyclerView recyclerView = view.findViewById(R.id.history_recycler_view);
         //подсказываем, что наш список конечный

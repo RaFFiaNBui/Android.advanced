@@ -31,4 +31,10 @@
     <string name="city_not_found">Город не найден</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="story_array_empty">Ваш список истории пуст</string>
+    <string name="settings_save">Настройки сохранены</string>
+    <string name="navigation_header">Navigation header</string>
+    <string name="start_screen">Начальный экран</string>
+    <string name="story">История</string>
+    <string name="communicate">Communicate</string>
 </resources>

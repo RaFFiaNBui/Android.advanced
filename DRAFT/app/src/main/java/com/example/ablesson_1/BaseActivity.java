@@ -26,7 +26,6 @@ public class BaseActivity extends AppCompatActivity implements Constants, Naviga
     private static final int SETTINGS_CODE = 555;
     private boolean currentThemeIsDark; //true - текущая тема ТЕМНАЯ
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -106,6 +105,7 @@ public class BaseActivity extends AppCompatActivity implements Constants, Naviga
         }
         return super.onOptionsItemSelected(item);
     }
+
     //отображение настроек
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -142,7 +142,6 @@ public class BaseActivity extends AppCompatActivity implements Constants, Naviga
     void initMenu() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -153,27 +152,21 @@ public class BaseActivity extends AppCompatActivity implements Constants, Naviga
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-
-
         switch (item.getItemId()) {
             case (R.id.nav_Start) :
                 FragmentManager fm = getSupportFragmentManager();
                 fm.popBackStack();
                 break;
-
             case (R.id.nav_Settings) :
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivityForResult(intent, SETTINGS_CODE);
                 break;
-
             case (R.id.nav_history) :
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 HistoryFragment historyFragment = new HistoryFragment();
                 ft.replace(R.id.first_fragment, historyFragment);
                 ft.commit();
                 break;
-
             case (R.id.nav_Developers) :
                 Intent intentDev = new Intent(this, DevelopersActivity.class);
                 startActivity(intentDev);

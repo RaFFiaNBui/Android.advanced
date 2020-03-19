@@ -23,7 +23,6 @@ public class CitiesAdapter extends RecyclerView.Adapter<CitiesAdapter.RecyclerVi
     @NonNull
     @Override
     public RecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_cities, parent, false);
         return new RecyclerViewHolder(view);
     }
@@ -57,8 +56,7 @@ public class CitiesAdapter extends RecyclerView.Adapter<CitiesAdapter.RecyclerVi
                 @Override
                 public void onClick(View v) {
                     clickListener.onItemClick(data);
-                    Snackbar.make(v, "Вы выбрали " + data, Snackbar.LENGTH_SHORT)
-                            .setAction("Action", null).show();
+                    Snackbar.make(v, "Вы выбрали " + data, Snackbar.LENGTH_SHORT).show();
                 }
             });
         }
