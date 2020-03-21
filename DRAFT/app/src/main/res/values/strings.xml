@@ -37,4 +37,6 @@
     <string name="story">Story</string>
     <string name="communicate">Communicate</string>
     <string name="close">Close</string>
+    <string name="file_not_found">File not found</string>
+    <string name="fail_connection">Fail connection</string>
 </resources>

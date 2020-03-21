@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 
 public class MyDialogFragment extends DialogFragment {
 
@@ -30,6 +31,12 @@ public class MyDialogFragment extends DialogFragment {
                         // Ставим слушатель, нажатие будем обрабатывать
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
+                                //возвращаемся на фрагмент выбора города
+                                FragmentManager fm = getFragmentManager();
+                                fm.popBackStack();
+                                //вызываем повторно диалог ввода города
+                                MyBottomSheetDialogFragment dialogFragment = MyBottomSheetDialogFragment.newInstance();
+                                dialogFragment.show(getFragmentManager(), "dialog_fragment");
                                 dismiss();
                             }
                         });
