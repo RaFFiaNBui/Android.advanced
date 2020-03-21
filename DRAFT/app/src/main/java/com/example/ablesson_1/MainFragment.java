@@ -66,6 +66,7 @@ public class MainFragment extends Fragment implements Constants {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+/*        //перенос ввода города в bottomsheetdialog
         TextInputEditText cityName = view.findViewById(R.id.field_enter_city);
         final Button btn = view.findViewById(R.id.btn_enter_city);
         //проверка при потере фокуса
@@ -78,6 +79,15 @@ public class MainFragment extends Fragment implements Constants {
                 }
                 TextView tv = (TextView) v;
                 validate(tv, checkCityName, getString(R.string.city_not_found));
+            }
+        });*/
+
+        TextView textViewEnterCity = view.findViewById(R.id.bottom_dialog);
+        textViewEnterCity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MyBottomSheetDialogFragment dialogFragment = MyBottomSheetDialogFragment.newInstance();
+                dialogFragment.show(getFragmentManager(), "dialog_fragment");
             }
         });
         //подтягиваем наш список городов
