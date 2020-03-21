@@ -37,7 +37,7 @@
     <string name="start_screen">Начальный экран</string>
     <string name="story">История</string>
     <string name="communicate">Communicate</string>
-    <string name="close">Close</string>
-    <string name="file_not_found">File not found</string>
-    <string name="fail_connection">Fail connection</string>
+    <string name="close">Закрыть</string>
+    <string name="file_not_found">Город не найден.</string>
+    <string name="fail_connection">Ошибка соединения</string>
 </resources>
