@@ -4,7 +4,7 @@
 
     <string name="weather_forecast">Выберите город</string>
     <string name="enter_city">Введите город</string>
-    <string name="enter1">Ввод</string>
+    <string name="enter">Ввод</string>
 
     <string name="image">Картинка</string>
     <string name="divided"> / </string>

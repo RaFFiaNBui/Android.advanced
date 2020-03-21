@@ -3,7 +3,7 @@
 
     <string name="weather_forecast">Choose a city</string>
     <string name="enter_city">Enter City</string>
-    <string name="enter1">Enter</string>
+    <string name="enter">Enter</string>
 
     <string name="image">image</string>
     <string name="divided"> / </string>
