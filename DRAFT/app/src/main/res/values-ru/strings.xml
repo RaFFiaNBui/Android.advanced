@@ -37,4 +37,5 @@
     <string name="start_screen">Начальный экран</string>
     <string name="story">История</string>
     <string name="communicate">Communicate</string>
+    <string name="close">Close</string>
 </resources>
