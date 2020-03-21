@@ -22,47 +22,59 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintBottom_toTopOf="@+id/textInputLayout"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_dialog"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginEnd="50dp"
-        android:layout_weight="5"
-        app:errorEnabled="true"
-        app:layout_constraintBottom_toTopOf="@+id/btn_enter_city"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+    <!--    <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:layout_weight="5"
+            app:errorEnabled="true"
+            app:layout_constraintBottom_toTopOf="@+id/btn_enter_city"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/field_enter_city"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/field_enter_city"
+                style="@style/MyTextStyleSerifBold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:hint="@string/enter_city"
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_enter_city"
             style="@style/MyTextStyleSerifBold"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:hint="@string/enter_city"
-            android:inputType="text" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_gravity="center"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:layout_weight="1"
+            android:text="@string/enter"
+            android:textAllCaps="false"
+            android:visibility="gone"
+            app:backgroundTint="@color/colorBlue"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />-->
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_enter_city"
-        style="@style/MyTextStyleSerifBold"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/bottom_dialog"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginStart="50dp"
-        android:layout_marginEnd="50dp"
-        android:layout_weight="1"
-        android:text="@string/enter1"
-        android:textAllCaps="false"
-        android:visibility="gone"
-        app:backgroundTint="@color/colorBlue"
+        android:text="@string/enter_city"
+        android:textColor="?attr/myTextColor"
+        android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
