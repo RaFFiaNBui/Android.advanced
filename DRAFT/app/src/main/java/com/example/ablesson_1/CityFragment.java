@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -62,13 +63,23 @@ public class CityFragment extends Fragment implements Constants {
     };
 
     public interface exceptionListener {
-        void setException ();
+        void setException(int code);
     }
 
+    //слушатель - обработчик ошибок
     private final exceptionListener exceptionListener = new exceptionListener() {
         @Override
-        public void setException() {
-            new MyDialogFragment().show(getFragmentManager(),"Exception");
+        public void setException(int code) {
+            String message;
+            if (code == 1) {
+                message = Objects.requireNonNull(getActivity()).getString(R.string.file_not_found);
+            } else {
+                message = Objects.requireNonNull(getActivity()).getString(R.string.fail_connection);
+            }
+            if (getFragmentManager() != null) {
+                //создаем диалоговое окно с необходимым нам сообщением
+                MyDialogFragment.create(message).show(getFragmentManager(), "Exception");
+            }
         }
     };
 
@@ -86,7 +97,10 @@ public class CityFragment extends Fragment implements Constants {
 
     // Получить посылку из параметра
     Parcel getParcel() {
-        Parcel parcel = (Parcel) getArguments().getSerializable(PARCEL);
+        Parcel parcel = null;
+        if (getArguments() != null) {
+            parcel = (Parcel) getArguments().getSerializable(PARCEL);
+        }
         return parcel;
     }
 
@@ -123,7 +137,7 @@ public class CityFragment extends Fragment implements Constants {
         recyclerView.setAdapter(weekAdapter);
         //инициализация фонового изображения
         ScrollView scrollView = view.findViewById(R.id.scrollView);
-        SharedPreferences sharedPref = this.getActivity().getSharedPreferences(SHARED_PREFERENCE_KEY, MODE_PRIVATE);
+        SharedPreferences sharedPref = Objects.requireNonNull(this.getActivity()).getSharedPreferences(SHARED_PREFERENCE_KEY, MODE_PRIVATE);
         if (sharedPref.getBoolean(IS_DARK_THEME, false)) {
             scrollView.setBackgroundResource(R.drawable.sky_night);
         } else {
@@ -139,7 +153,7 @@ public class CityFragment extends Fragment implements Constants {
 
     //метод отрисовки необходимых настроек
     private void changeSettings(View v) {
-        SharedPreferences sharedPref = getActivity().getSharedPreferences(SHARED_PREFERENCE_KEY, MODE_PRIVATE);
+        SharedPreferences sharedPref = Objects.requireNonNull(getActivity()).getSharedPreferences(SHARED_PREFERENCE_KEY, MODE_PRIVATE);
         //отрисовка восхода и заката
         boolean tempSun = sharedPref.getBoolean(SUN, true);
         TableRow TRSunset = v.findViewById(R.id.sunset_row);
