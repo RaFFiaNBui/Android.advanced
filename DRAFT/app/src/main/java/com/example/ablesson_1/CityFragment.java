@@ -15,8 +15,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ablesson_1.model.WeatherRequest;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,7 +27,6 @@ import static android.content.Context.MODE_PRIVATE;
 public class CityFragment extends Fragment implements Constants {
 
     private String currentCity = "Moscow";
-    private String temp;
     private static ArrayList<String> citiesList = new ArrayList<>();
     private static ArrayList<String> temperatureList = new ArrayList<>();
 
@@ -42,23 +39,23 @@ public class CityFragment extends Fragment implements Constants {
     private TextView windSpeed;
 
     public interface OnDataLoadedListener {
-        void onLoaded(WeatherRequest weatherRequest);
+        void onLoaded(String strName, String strTemperature, String strHumidity, String strSunrise,
+                      String strSunset, String strPressure, String strWindSpeed);
     }
 
-    //вешаем лисенер, который будет сетить наши данные после их загрузки
+    //вешаем лисенер, который будет сетить наши данные после их загрузки и парсинга
     private final OnDataLoadedListener onDataLoadedListener = new OnDataLoadedListener() {
         @Override
-        public void onLoaded(WeatherRequest weatherRequest) {
-            temp = String.format(Locale.getDefault(), "%d", weatherRequest.getMain().getTemp());
-            currentTemperature.setText(temp);
-            currentHumidity.setText(String.format(Locale.getDefault(), "%d", weatherRequest.getMain().getHumidity()));
-            SimpleDateFormat smp = new SimpleDateFormat("HH:mm", Locale.getDefault());
-            sunrise.setText(String.format(Locale.getDefault(), "%s", smp.format(weatherRequest.getSys().getSunrise() * 1000L)));
-            sunset.setText(String.format(Locale.getDefault(), "%s", smp.format(weatherRequest.getSys().getSunset() * 1000L)));
-            currentPressure.setText(String.format(Locale.getDefault(), "%d", weatherRequest.getMain().getPressure()));
-            windSpeed.setText(String.format(Locale.getDefault(), "%d", weatherRequest.getWind().getSpeed()));
-            currentName.setText(String.format(Locale.getDefault(), "%s", weatherRequest.getName()));
-            saveHistory();
+        public void onLoaded(String strName, String strTemperature, String strHumidity, String strSunrise,
+                             String strSunset, String strPressure, String strWindSpeed) {
+            currentTemperature.setText(strTemperature);
+            currentHumidity.setText(strHumidity);
+            sunrise.setText(strSunrise);
+            sunset.setText(strSunset);
+            currentPressure.setText(strPressure);
+            windSpeed.setText(strWindSpeed);
+            currentName.setText(strName);
+            saveHistory(strTemperature);
         }
     };
 
@@ -202,7 +199,7 @@ public class CityFragment extends Fragment implements Constants {
     }
 
     //метод сохранения истории
-    private void saveHistory() {
+    private void saveHistory(String temp) {
         citiesList.add(currentCity);
         temperatureList.add(temp);
     }
