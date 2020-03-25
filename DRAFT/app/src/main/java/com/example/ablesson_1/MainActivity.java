@@ -13,10 +13,11 @@ public class MainActivity extends BaseActivity {
 
         initMenu();
 
+        //вывод на начальный экран главного фрагмента
         if (savedInstanceState == null) {
             MainFragment mainFragment = new MainFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.add(R.id.first_fragment,mainFragment);
+            ft.add(R.id.first_fragment, mainFragment);
             ft.commit();
         }
     }

@@ -25,8 +25,7 @@ public class DevelopersActivity extends BaseActivity {
                 if (emailIntent.resolveActivity(getPackageManager()) != null) {
                     startActivity(emailIntent);
                 } else {
-                    Snackbar.make(v, "Не найдено приложений для отправки сообщения email", Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
+                    Snackbar.make(v, "Не найдено приложений для отправки сообщения email", Snackbar.LENGTH_LONG).show();
                 }
             }
         });

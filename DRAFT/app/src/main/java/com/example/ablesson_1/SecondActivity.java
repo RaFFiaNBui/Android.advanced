@@ -4,6 +4,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 
 public class SecondActivity extends BaseActivity implements Constants {
+    //После перехода на одну активити, данная активити не используется
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,25 +1,43 @@
-<?xml version="1.0" encoding="utf-8"?><!-- это макет для альбомной ориентации -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?><!-- это макет для портретной ориентации -->
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start">
 
-    <!-- Фрагмент с выбором города -->
-    <fragment
-        android:id="@+id/first_fragment"
-        android:name="com.example.ablesson_1.MainFragment"
-        android:layout_width="0px"
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        tools:layout="@layout/fragment_main" />
+        android:baselineAligned="false"
+        android:orientation="horizontal">
 
-    <!-- Фрагмент с погодой в городе -->
-    <FrameLayout
-        android:id="@+id/frame_for_fragment_2"
-        android:layout_width="0px"
+        <include
+            layout="@layout/app_bar_main"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_weight="1" />
+        <!-- Фрагмент с погодой в городе -->
+        <FrameLayout
+            android:id="@+id/frame_for_fragment_2"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:background="?android:attr/detailsElementBackground" />
+    </LinearLayout>
+
+
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="?android:attr/detailsElementBackground" />
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header_main"
+        app:menu="@menu/activity_main_drawer" />
 
-</LinearLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

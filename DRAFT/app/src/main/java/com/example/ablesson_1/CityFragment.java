@@ -61,6 +61,17 @@ public class CityFragment extends Fragment implements Constants {
         }
     };
 
+    public interface exceptionListener {
+        void setException ();
+    }
+
+    private final exceptionListener exceptionListener = new exceptionListener() {
+        @Override
+        public void setException() {
+            new MyDialogFragment().show(getFragmentManager(),"Exception");
+        }
+    };
+
     // Фабричный метод создания фрагмента
     // Фрагменты рекомендуется создавать через фабричные методы.
     static CityFragment create(Parcel parcel) {
@@ -123,7 +134,7 @@ public class CityFragment extends Fragment implements Constants {
         //инициализация текстовых полей
         init(view);
         //устанавливаем соединение
-        new Connection(currentCity, onDataLoadedListener);
+        new Connection(currentCity, onDataLoadedListener, exceptionListener);
     }
 
     //метод отрисовки необходимых настроек

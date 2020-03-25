@@ -23,7 +23,7 @@ class Connection {
     private static final String WEATHER_URL_PART2_RU = "&units=metric&lang=ru&appid=";
     private static final String WEATHER_URL_PART2_EN = "&units=metric&lang=en&appid=";
 
-    Connection(String city, final CityFragment.OnDataLoadedListener onDataLoadedListener) {
+    Connection(String city, final CityFragment.OnDataLoadedListener onDataLoadedListener, final CityFragment.exceptionListener exceptionListener) {
         try {
             final URL uri;
             if (Locale.getDefault().getLanguage().equals("ru")) {
@@ -52,6 +52,7 @@ class Connection {
                             }
                         });
                     } catch (FileNotFoundException e) {
+                        exceptionListener.setException();
                         Log.e("Exc", "Fail not found", e);
                         e.printStackTrace();
                     } catch (IOException e) {

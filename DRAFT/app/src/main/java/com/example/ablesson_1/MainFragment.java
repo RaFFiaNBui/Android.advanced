@@ -42,19 +42,19 @@ public class MainFragment extends Fragment implements Constants {
     };
 
     //ClickListener на кнопку ввода названия города
-    private View.OnClickListener enterCityListener = new View.OnClickListener() {
+/*    private View.OnClickListener enterCityListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             //при клике создается новая посылка с названием города
-/*            TextInputEditText enterCity = v.findViewById(R.id.field_enter_city);
+            TextInputEditText enterCity = v.findViewById(R.id.field_enter_city);
             String str = enterCity.getText().toString();
             if (enterCity.getText().toString() != null) {
                 currentParcel = new Parcel(str);
                 //и запускается метод отображения с названием города
                 showSecondFragment(currentParcel);
-            }*/
+            }
         }
-    };
+    };*/
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,6 +66,7 @@ public class MainFragment extends Fragment implements Constants {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+/*        //перенос ввода города в bottomsheetdialog
         TextInputEditText cityName = view.findViewById(R.id.field_enter_city);
         final Button btn = view.findViewById(R.id.btn_enter_city);
         //проверка при потере фокуса
@@ -77,7 +78,16 @@ public class MainFragment extends Fragment implements Constants {
                     return;
                 }
                 TextView tv = (TextView) v;
-                validate(tv, checkCityName, "Город не найден");
+                validate(tv, checkCityName, getString(R.string.city_not_found));
+            }
+        });*/
+
+        TextView textViewEnterCity = view.findViewById(R.id.bottom_dialog);
+        textViewEnterCity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MyBottomSheetDialogFragment dialogFragment = MyBottomSheetDialogFragment.newInstance();
+                dialogFragment.show(getFragmentManager(), "dialog_fragment");
             }
         });
         //подтягиваем наш список городов
@@ -97,8 +107,8 @@ public class MainFragment extends Fragment implements Constants {
         //устанавливаем нашему списку адаптер
         recyclerView.setAdapter(citiesAdapter);
 
-        Button buttonEnterCity = view.findViewById(R.id.btn_enter_city);
-        buttonEnterCity.setOnClickListener(enterCityListener);
+        /*Button buttonEnterCity = view.findViewById(R.id.btn_enter_city);
+        buttonEnterCity.setOnClickListener(enterCityListener);*/
 
         //инициализация фонового изображения
         ConstraintLayout constraintLayout = view.findViewById(R.id.mainFragmentLayout);
@@ -146,16 +156,7 @@ public class MainFragment extends Fragment implements Constants {
     // Показать 2 фрагмент. Ecли возможно, то показать рядом с первым,
     // если нет, то открыть вторую activity
     private void showSecondFragment(Parcel parcel) {
-
-        CityFragment detail = CityFragment.create(parcel);
-
-        // Выполняем транзакцию по замене фрагмента
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(R.id.first_fragment, detail);  // замена фрагмента
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        ft.addToBackStack("Start");
-        ft.commit();
-/*        if (isLandscape) {
+        if (isLandscape) {
             // Проверим, что фрагмент с погодой существует в activity
             CityFragment detail = (CityFragment)
                     getFragmentManager().findFragmentById(R.id.frame_for_fragment_2);
@@ -172,15 +173,16 @@ public class MainFragment extends Fragment implements Constants {
                 ft.commit();
             }
         } else {
-            // Если нельзя вывести герб рядом, откроем вторую activity
-            FragmentActivity fragmentActivity = getActivity();
-            if (fragmentActivity != null) {
-                Intent intent = new Intent(fragmentActivity, SecondActivity.class);
-                //+ и передадим туда Parcel
-                intent.putExtra(PARCEL, parcel);
-                startActivity(intent);
-            }
-        }*/
+            // Если нельзя вывести второй фрагмент рядом, то выполним замену первого фрагменте
+            CityFragment detail = CityFragment.create(parcel);
+
+            // Выполняем транзакцию по замене фрагмента
+            FragmentTransaction ft = getFragmentManager().beginTransaction();
+            ft.replace(R.id.first_fragment, detail);  // замена фрагмента
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+            ft.addToBackStack("Start");
+            ft.commit();
+        }
     }
 
     private void validate(TextView tv, Pattern check, String msg) {
