@@ -165,6 +165,7 @@ public class BaseActivity extends AppCompatActivity implements Constants, Naviga
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 HistoryFragment historyFragment = new HistoryFragment();
                 ft.replace(R.id.first_fragment, historyFragment);
+                ft.addToBackStack("Start");
                 ft.commit();
                 break;
             case (R.id.nav_Developers) :
