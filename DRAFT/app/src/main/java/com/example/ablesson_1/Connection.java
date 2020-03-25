@@ -52,10 +52,13 @@ class Connection {
                             }
                         });
                     } catch (FileNotFoundException e) {
-                        exceptionListener.setException();
-                        Log.e("Exc", "Fail not found", e);
+                        int code = 1;
+                        exceptionListener.setException(code);
+                        Log.e("Exc", "File not found", e);
                         e.printStackTrace();
                     } catch (IOException e) {
+                        int code = 2;
+                        exceptionListener.setException(code);
                         Log.e("Exc", "Fail connection", e);
                         e.printStackTrace();
                     } finally {
