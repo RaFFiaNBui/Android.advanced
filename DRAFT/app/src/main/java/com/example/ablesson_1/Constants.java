@@ -8,4 +8,5 @@ public interface Constants {
     String IS_DARK_THEME = "IS_DARK_THEME";
     String PARCEL = "parcel";
     String SHARED_PREFERENCE_KEY = "SharedPreference";
+    String MESSAGE = "Message";
 }

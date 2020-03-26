@@ -3,9 +3,6 @@ package com.example.ablesson_1;
 import android.os.Handler;
 import android.util.Log;
 
-import com.example.ablesson_1.model.WeatherRequest;
-import com.google.gson.Gson;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -36,26 +33,22 @@ class Connection {
                 @Override
                 public void run() {
                     HttpsURLConnection urlConnection = null;
+                    Log.d("MyLog", "run: Thread from Connection is started");
                     try {
                         urlConnection = (HttpsURLConnection) uri.openConnection();
                         urlConnection.setRequestMethod("GET");  //устанавливаем метод получения данных - GET
                         urlConnection.setReadTimeout(10000);    //устанавливаем таймаут - 10 000 миллисекунд
                         BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));  //читаем данные в поток
                         String result = getLines(in);
-                        // преобразование данных запроса в модель
-                        Gson gson = new Gson();
-                        final WeatherRequest weatherRequest = gson.fromJson(result, WeatherRequest.class);
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                onDataLoadedListener.onLoaded(weatherRequest);
-                            }
-                        });
+                        new DataParsing(onDataLoadedListener, handler, result);
                     } catch (FileNotFoundException e) {
-                        exceptionListener.setException();
-                        Log.e("Exc", "Fail not found", e);
+                        int code = 1;
+                        exceptionListener.setException(code);
+                        Log.e("Exc", "File not found", e);
                         e.printStackTrace();
                     } catch (IOException e) {
+                        int code = 2;
+                        exceptionListener.setException(code);
                         Log.e("Exc", "Fail connection", e);
                         e.printStackTrace();
                     } finally {
