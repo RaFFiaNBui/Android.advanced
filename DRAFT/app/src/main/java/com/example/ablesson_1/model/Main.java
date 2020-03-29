@@ -1,8 +1,18 @@
 package com.example.ablesson_1.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class Main {
+
+    @SerializedName("temp")
+    @Expose
     private float temp;
+    @SerializedName("pressure")
+    @Expose
     private int pressure;
+    @SerializedName("humidity")
+    @Expose
     private int humidity;
 
     public int getTemp() {
