@@ -2,6 +2,7 @@ package com.example.ablesson_1;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ablesson_1.model.WeatherRequest;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,13 +25,21 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 import static android.content.Context.MODE_PRIVATE;
 
 public class CityFragment extends Fragment implements Constants {
 
-    private String currentCity = "Moscow";
-    private static ArrayList<String> citiesList = new ArrayList<>();
-    private static ArrayList<String> temperatureList = new ArrayList<>();
+    private static final String WEATHER_API_KEY = "14f34cd242746f2d76bb04739d7485fe"; //временный Api
+    private String currentCity = "Moscow";  //будет привязана геолокация
+
+    private static ArrayList<String> citiesList = new ArrayList<>();        //для экрана истории
+    private static ArrayList<String> temperatureList = new ArrayList<>();   //для экрана истории
 
     private TextView currentName;
     private TextView currentTemperature;
@@ -38,13 +49,17 @@ public class CityFragment extends Fragment implements Constants {
     private TextView currentPressure;
     private TextView windSpeed;
 
-    public interface OnDataLoadedListener {
+    private OpenWeather openWeather;
+
+    //версия 2 использовалась с классом Connection и DataParsing
+/*    public interface OnDataLoadedListener {
         void onLoaded(String strName, String strTemperature, String strHumidity, String strSunrise,
                       String strSunset, String strPressure, String strWindSpeed);
-    }
+    }*/
 
     //вешаем лисенер, который будет сетить наши данные после их загрузки и парсинга
-    private final OnDataLoadedListener onDataLoadedListener = new OnDataLoadedListener() {
+    //версия 2 использовалась с классом Connection и DataParsing
+/*    private final OnDataLoadedListener onDataLoadedListener = new OnDataLoadedListener() {
         @Override
         public void onLoaded(String strName, String strTemperature, String strHumidity, String strSunrise,
                              String strSunset, String strPressure, String strWindSpeed) {
@@ -57,14 +72,16 @@ public class CityFragment extends Fragment implements Constants {
             currentName.setText(strName);
             saveHistory(strTemperature);
         }
-    };
+    };*/
 
-    public interface exceptionListener {
+    //версия 2 использовалась с классом Connection и DataParsing
+/*    public interface exceptionListener {
         void setException(int code);
-    }
+    }*/
 
     //слушатель - обработчик ошибок
-    private final exceptionListener exceptionListener = new exceptionListener() {
+    //версия 2 использовалась с классом Connection и DataParsing
+/*    private final exceptionListener exceptionListener = new exceptionListener() {
         @Override
         public void setException(int code) {
             String message;
@@ -78,7 +95,7 @@ public class CityFragment extends Fragment implements Constants {
                 MyDialogFragment.create(message).show(getFragmentManager(), "Exception");
             }
         }
-    };
+    };*/
 
     // Фабричный метод создания фрагмента
     // Фрагменты рекомендуется создавать через фабричные методы.
@@ -144,8 +161,21 @@ public class CityFragment extends Fragment implements Constants {
         setDate(view);
         //инициализация текстовых полей
         init(view);
-        //устанавливаем соединение
-        new Connection(currentCity, onDataLoadedListener, exceptionListener);
+        //устанавливаем соединение версия 2 использовалась с классом Connection и DataParsing
+        //new Connection(currentCity, onDataLoadedListener, exceptionListener);
+        // установка параметров для запроса
+        String lang;  //выбор языка
+        final String units; //выбор системы измерений
+        if (Locale.getDefault().getLanguage().equals("ru")) {
+            lang = "ru";
+            units = "metric";
+        } else {
+            lang = "en";
+            units = "imperial";
+        }
+        //установка соединения по средствам Retrofit
+        initRetrofit();
+        requestRetrofit(currentCity, units, lang);
     }
 
     //метод отрисовки необходимых настроек
@@ -210,5 +240,53 @@ public class CityFragment extends Fragment implements Constants {
 
     static ArrayList<String> getTemperatureList() {
         return temperatureList;
+    }
+
+    private void initRetrofit() {
+        Retrofit retrofit;
+        retrofit = new Retrofit.Builder()
+                .baseUrl("http://api.openweathermap.org/")  //базовая часть адреса
+                .addConverterFactory(GsonConverterFactory.create()) //конвертер для преобразования из json в объкект
+                .build();
+        openWeather = retrofit.create(OpenWeather.class);   //создаем объект при помощи которогобудем выполнять запросы
+    }
+
+    private void requestRetrofit(String city, String units, String lang) {
+        openWeather.loadWeather(city, units, lang, CityFragment.WEATHER_API_KEY)
+                .enqueue(new Callback<WeatherRequest>() {
+                    @Override
+                    public void onResponse(Call<WeatherRequest> call, Response<WeatherRequest> response) {
+                        if (response.body() != null) {
+                            String temp = String.format(Locale.getDefault(), "%d", response.body().getMain().getTemp());
+                            currentTemperature.setText(temp);
+
+                            int humidity = response.body().getMain().getHumidity();
+                            currentHumidity.setText(Integer.toString(humidity));
+
+                            currentPressure.setText(String.format(Locale.getDefault(), "%d", response.body().getMain().getPressure()));
+
+                            SimpleDateFormat smp = new SimpleDateFormat("HH:mm", Locale.getDefault());
+                            sunrise.setText(String.format(Locale.getDefault(), "%s", smp.format(response.body().getSys().getSunrise() * 1000L)));
+                            sunset.setText(String.format(Locale.getDefault(), "%s", smp.format(response.body().getSys().getSunset() * 1000L)));
+                            windSpeed.setText(String.format(Locale.getDefault(), "%d", response.body().getWind().getSpeed()));
+                            currentName.setText(String.format(Locale.getDefault(), "%s", response.body().getName()));
+                            saveHistory(temp);
+                        } else {
+                            Log.e("MyLog", "onResponse: Город не был найден на сервере code=" + response.code() + " message=" + response.message());
+                            String message = getResources().getString(R.string.error_msg_part_1) + city + getResources().getString(R.string.error_msg_part_2);
+                            //создаем диалоговое окно с необходимым нам сообщением
+                            MyDialogFragment.create(message).show(getFragmentManager(), "Exception");
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<WeatherRequest> call, Throwable t) {
+                        Log.e("MyLog", "onFailure: Ошибка соединения", t);  //код в случае ошибки соединения
+                        t.printStackTrace();
+                        String message = getResources().getString(R.string.fail_connection);
+                        //создаем диалоговое окно с необходимым нам сообщением
+                        MyDialogFragment.create(message).show(getFragmentManager(), "Exception");
+                    }
+                });
     }
 }
