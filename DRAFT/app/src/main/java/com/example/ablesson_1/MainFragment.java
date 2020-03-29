@@ -25,6 +25,7 @@ public class MainFragment extends Fragment implements Constants {
     private boolean isLandscape;    // true - планшетная ориентация
     private Parcel currentParcel;   // Текущая посылка (название города)
 
+    //использовалась при валидации в TextInputEditText ввода города
     private Pattern checkCityName = Pattern.compile("^[A-Z][a-z]{2,}$");
 
     //ClickListener на TextView поля списка RecyclerView
@@ -38,7 +39,8 @@ public class MainFragment extends Fragment implements Constants {
         }
     };
 
-    //ClickListener на кнопку ввода названия города
+    //ClickListener на кнопку ввода названия города, первоначальный вариант,
+    //был заменен при замене EditText на TextInputEditText
 /*    private View.OnClickListener enterCityListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -104,6 +106,7 @@ public class MainFragment extends Fragment implements Constants {
         //устанавливаем нашему списку адаптер
         recyclerView.setAdapter(citiesAdapter);
 
+        //кнопка ввода города из TextInputEditText
         /*Button buttonEnterCity = view.findViewById(R.id.btn_enter_city);
         buttonEnterCity.setOnClickListener(enterCityListener);*/
 
@@ -182,6 +185,7 @@ public class MainFragment extends Fragment implements Constants {
         }
     }
 
+    //использовался ранее в компоненте TextInputEditText ввода города
     private void validate(TextView tv, Pattern check, String msg) {
         String value = tv.getText().toString();
         if (check.matcher(value).matches()) {
