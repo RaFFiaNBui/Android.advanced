@@ -25,6 +25,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -247,8 +249,24 @@ public class CityFragment extends Fragment implements Constants {
         retrofit = new Retrofit.Builder()
                 .baseUrl("http://api.openweathermap.org/")  //базовая часть адреса
                 .addConverterFactory(GsonConverterFactory.create()) //конвертер для преобразования из json в объкект
+                .client(getLoggingOkHttpClient())
                 .build();
         openWeather = retrofit.create(OpenWeather.class);   //создаем объект при помощи которогобудем выполнять запросы
+    }
+
+    private OkHttpClient getLoggingOkHttpClient() {
+        //Сначала создаем HttpLoggingInterceptor. В нем настраиваем уровень логирования.
+        // Если у нас Debug билд, то выставляем максимальный уровень (BODY), иначе - ничего
+        // не логируем, чтобы не палить в логах релизные запросы.
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(BuildConfig.DEBUG ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
+
+        //HttpLoggingInterceptor мы не можем напрямую передать в Retrofit билдер. Поэтому
+        // сначала создаем OkHttpClient, ему передаем HttpLoggingInterceptor, и уже этот
+        // OkHttpClient используем в Retrofit билдере
+        return new OkHttpClient.Builder()
+                            .addInterceptor(interceptor)
+                            .build();
     }
 
     private void requestRetrofit(String city, String units, String lang) {
@@ -282,7 +300,6 @@ public class CityFragment extends Fragment implements Constants {
                     @Override
                     public void onFailure(Call<WeatherRequest> call, Throwable t) {
                         Log.e("MyLog", "onFailure: Ошибка соединения", t);  //код в случае ошибки соединения
-                        t.printStackTrace();
                         String message = getResources().getString(R.string.fail_connection);
                         //создаем диалоговое окно с необходимым нам сообщением
                         MyDialogFragment.create(message).show(getFragmentManager(), "Exception");
