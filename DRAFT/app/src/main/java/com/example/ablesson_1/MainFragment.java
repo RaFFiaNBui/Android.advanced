@@ -180,7 +180,6 @@ public class MainFragment extends Fragment implements Constants {
             FragmentTransaction ft = getFragmentManager().beginTransaction();
             ft.replace(R.id.first_fragment, detail);  // замена фрагмента
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-            ft.addToBackStack("Start");
             ft.commit();
         }
     }

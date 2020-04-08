@@ -15,9 +15,9 @@ public class MainActivity extends BaseActivity {
 
         //вывод на начальный экран главного фрагмента
         if (savedInstanceState == null) {
-            MainFragment mainFragment = new MainFragment();
+            CityFragment cityFragment = new CityFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.add(R.id.first_fragment, mainFragment);
+            ft.add(R.id.first_fragment, cityFragment);
             ft.commit();
         }
     }

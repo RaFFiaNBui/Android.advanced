@@ -38,7 +38,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class CityFragment extends Fragment implements Constants {
 
     private static final String WEATHER_API_KEY = "14f34cd242746f2d76bb04739d7485fe"; //временный Api
-    private String currentCity = "Moscow";  //будет привязана геолокация
+    private String currentCity;  //будет привязана геолокация
 
     private static ArrayList<String> citiesList = new ArrayList<>();        //для экрана истории
     private static ArrayList<String> temperatureList = new ArrayList<>();   //для экрана истории
@@ -128,8 +128,15 @@ public class CityFragment extends Fragment implements Constants {
         TextView textViewCity = layout.findViewById(R.id.city);
         changeSettings(layout);
         Parcel parcel = getParcel();
-        textViewCity.setText(parcel.getCityName());
-        currentCity = parcel.getCityName();
+        //Если это 1 запуск, то берем настройки из SharedPreference, если нет - из Parcel
+        //В дальнейшем Parcel можно убрать вообще и использовать только SharedPreference
+        if (parcel == null) {
+            SharedPreferences sPref = getActivity().getSharedPreferences(SHARED_PREFERENCE_KEY, MODE_PRIVATE);
+            currentCity = sPref.getString(CITY, "Москва");
+        } else {
+            currentCity = parcel.getCityName();
+        }
+        textViewCity.setText(currentCity);
         return layout;
     }
 
@@ -277,18 +284,16 @@ public class CityFragment extends Fragment implements Constants {
                         if (response.body() != null) {
                             String temp = String.format(Locale.getDefault(), "%d", response.body().getMain().getTemp());
                             currentTemperature.setText(temp);
-
-                            int humidity = response.body().getMain().getHumidity();
-                            currentHumidity.setText(Integer.toString(humidity));
-
+                            currentHumidity.setText(String.format(Locale.getDefault(), "%d", response.body().getMain().getHumidity()));
                             currentPressure.setText(String.format(Locale.getDefault(), "%d", response.body().getMain().getPressure()));
-
+                            windSpeed.setText(String.format(Locale.getDefault(), "%d", response.body().getWind().getSpeed()));
+                            currentName.setText(String.format(Locale.getDefault(), "%s", response.body().getName()));
+                            //Время восхода и заката приводим к привычному виду
                             SimpleDateFormat smp = new SimpleDateFormat("HH:mm", Locale.getDefault());
                             sunrise.setText(String.format(Locale.getDefault(), "%s", smp.format(response.body().getSys().getSunrise() * 1000L)));
                             sunset.setText(String.format(Locale.getDefault(), "%s", smp.format(response.body().getSys().getSunset() * 1000L)));
-                            windSpeed.setText(String.format(Locale.getDefault(), "%d", response.body().getWind().getSpeed()));
-                            currentName.setText(String.format(Locale.getDefault(), "%s", response.body().getName()));
                             saveHistory(temp);
+                            saveCity(temp);
                         } else {
                             Log.e("MyLog", "onResponse: Город не был найден на сервере code=" + response.code() + " message=" + response.message());
                             String message = getResources().getString(R.string.error_msg_part_1) + city + getResources().getString(R.string.error_msg_part_2);
@@ -305,5 +310,12 @@ public class CityFragment extends Fragment implements Constants {
                         MyDialogFragment.create(message).show(getFragmentManager(), "Exception");
                     }
                 });
+    }
+
+    private void saveCity(String temp) {
+        SharedPreferences preferences = getActivity().getSharedPreferences(SHARED_PREFERENCE_KEY, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(CITY, temp);
+        editor.apply();
     }
 }
