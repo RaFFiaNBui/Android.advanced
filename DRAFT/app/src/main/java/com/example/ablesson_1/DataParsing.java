@@ -9,7 +9,8 @@ import com.google.gson.Gson;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-class DataParsing {
+//данный класс работал в паре с Connection до подключения библиотеки Retrofit
+/*class DataParsing {
 
     DataParsing(final CityFragment.OnDataLoadedListener onDataLoadedListener, final Handler handler, final String result) {
 
@@ -44,4 +45,4 @@ class DataParsing {
         });
 
     }
-}
+}*/

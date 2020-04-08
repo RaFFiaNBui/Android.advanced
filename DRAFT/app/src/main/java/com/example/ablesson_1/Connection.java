@@ -14,7 +14,8 @@ import java.util.stream.Collectors;
 
 import javax.net.ssl.HttpsURLConnection;
 
-class Connection {
+//данный класс работал в паре с DataParsing до подключения библиотеки Retrofit
+/*class Connection {
     private static final String WEATHER_API_KEY = "14f34cd242746f2d76bb04739d7485fe"; //временный Api
     private static final String WEATHER_URL_PART1 = "https://api.openweathermap.org/data/2.5/weather?q=";
     private static final String WEATHER_URL_PART2_RU = "&units=metric&lang=ru&appid=";
@@ -67,4 +68,4 @@ class Connection {
     private String getLines(BufferedReader in) {
         return in.lines().collect(Collectors.joining("\n"));
     }
-}
+}*/

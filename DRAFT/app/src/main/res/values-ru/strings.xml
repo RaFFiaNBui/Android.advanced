@@ -40,4 +40,6 @@
     <string name="close">Закрыть</string>
     <string name="file_not_found">Город не найден.</string>
     <string name="fail_connection">Ошибка соединения</string>
+    <string name="error_msg_part_1">Город \"</string>
+    <string name="error_msg_part_2">\" не найден</string>
 </resources>
