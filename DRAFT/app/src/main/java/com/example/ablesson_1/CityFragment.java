@@ -287,13 +287,14 @@ public class CityFragment extends Fragment implements Constants {
                             currentHumidity.setText(String.format(Locale.getDefault(), "%d", response.body().getMain().getHumidity()));
                             currentPressure.setText(String.format(Locale.getDefault(), "%d", response.body().getMain().getPressure()));
                             windSpeed.setText(String.format(Locale.getDefault(), "%d", response.body().getWind().getSpeed()));
-                            currentName.setText(String.format(Locale.getDefault(), "%s", response.body().getName()));
+                            currentCity = String.format(Locale.getDefault(), "%s", response.body().getName());
+                            currentName.setText(currentCity);
                             //Время восхода и заката приводим к привычному виду
                             SimpleDateFormat smp = new SimpleDateFormat("HH:mm", Locale.getDefault());
                             sunrise.setText(String.format(Locale.getDefault(), "%s", smp.format(response.body().getSys().getSunrise() * 1000L)));
                             sunset.setText(String.format(Locale.getDefault(), "%s", smp.format(response.body().getSys().getSunset() * 1000L)));
                             saveHistory(temp);
-                            saveCity(temp);
+                            saveCity();
                         } else {
                             Log.e("MyLog", "onResponse: Город не был найден на сервере code=" + response.code() + " message=" + response.message());
                             String message = getResources().getString(R.string.error_msg_part_1) + city + getResources().getString(R.string.error_msg_part_2);
@@ -312,10 +313,10 @@ public class CityFragment extends Fragment implements Constants {
                 });
     }
 
-    private void saveCity(String temp) {
+    private void saveCity() {
         SharedPreferences preferences = getActivity().getSharedPreferences(SHARED_PREFERENCE_KEY, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putString(CITY, temp);
+        editor.putString(CITY, currentCity);
         editor.apply();
     }
 }
