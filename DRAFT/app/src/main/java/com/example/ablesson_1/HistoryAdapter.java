@@ -40,7 +40,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
     @Override
     public void onBindViewHolder(@NonNull HistoryHolder holder, int position) {
         //holder.setData(dataCity.get(position), dataTemp.get(position));
-        List<LineOfHistory> linies = dataSource.getLinies();
+        List<LineOfHistory> linies = dataSource.getLines();
         LineOfHistory lineOfHistory = linies.get(position);
         holder.setData(lineOfHistory.cityName, lineOfHistory.cityTemp, lineOfHistory.date);
     }
@@ -50,7 +50,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
         return dataCity.size();
     }*/
     public int getItemCount() {
-        return (int) dataSource.getCountLinies();
+        return (int) dataSource.getCountLines();
     }
 
     class HistoryHolder extends RecyclerView.ViewHolder {
