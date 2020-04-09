@@ -1,4 +1,4 @@
-package com.example.ablesson_1.history;
+package com.example.ablesson1.history;
 
 import androidx.room.Dao;
 import androidx.room.Delete;

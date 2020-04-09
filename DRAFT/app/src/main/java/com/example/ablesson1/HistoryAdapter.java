@@ -1,4 +1,4 @@
-package com.example.ablesson_1;
+package com.example.ablesson1;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,8 +8,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ablesson_1.history.HistorySource;
-import com.example.ablesson_1.history.LineOfHistory;
+import com.example.ablesson1.history.HistorySource;
+import com.example.ablesson1.history.LineOfHistory;
 
 import java.text.SimpleDateFormat;
 import java.util.List;

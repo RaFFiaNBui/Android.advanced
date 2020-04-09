@@ -1,4 +1,4 @@
-package com.example.ablesson_1;
+package com.example.ablesson1;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,7 +15,6 @@ import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;

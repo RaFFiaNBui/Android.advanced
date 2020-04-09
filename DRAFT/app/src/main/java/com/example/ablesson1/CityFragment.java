@@ -1,4 +1,4 @@
-package com.example.ablesson_1;
+package com.example.ablesson1;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,11 +16,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ablesson_1.history.App;
-import com.example.ablesson_1.history.HistoryDao;
-import com.example.ablesson_1.history.HistorySource;
-import com.example.ablesson_1.history.LineOfHistory;
-import com.example.ablesson_1.model.WeatherRequest;
+import com.example.ablesson1.history.App;
+import com.example.ablesson1.history.HistoryDao;
+import com.example.ablesson1.history.HistorySource;
+import com.example.ablesson1.history.LineOfHistory;
+import com.example.ablesson1.model.WeatherRequest;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

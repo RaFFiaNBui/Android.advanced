@@ -1,4 +1,4 @@
-package com.example.ablesson_1.model;
+package com.example.ablesson1.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

@@ -1,18 +1,4 @@
-package com.example.ablesson_1;
-
-import android.os.Handler;
-import android.util.Log;
-
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Locale;
-import java.util.stream.Collectors;
-
-import javax.net.ssl.HttpsURLConnection;
+package com.example.ablesson1;
 
 //данный класс работал в паре с DataParsing до подключения библиотеки Retrofit
 /*class Connection {
