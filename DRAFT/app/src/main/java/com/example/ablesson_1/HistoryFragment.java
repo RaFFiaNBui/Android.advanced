@@ -11,7 +11,9 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
+import com.example.ablesson_1.history.App;
+import com.example.ablesson_1.history.HistoryDao;
+import com.example.ablesson_1.history.HistorySource;
 
 public class HistoryFragment extends Fragment {
 
@@ -25,13 +27,15 @@ public class HistoryFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        //подтягиваем наш список городов
+        //неиспользуется после подключения Room
+/*        //подтягиваем наш список городов
         ArrayList<String> dataCity = CityFragment.getCitiesList();
         ArrayList<String> dataTemp = CityFragment.getTemperatureList();
         if(dataCity.size() == 0){
             dataCity.add(getString(R.string.story_array_empty));
             dataTemp.add(" ");
-        }
+        }*/
+
         //инициализируем RecyclerView
         RecyclerView recyclerView = view.findViewById(R.id.history_recycler_view);
         //подсказываем, что наш список конечный
@@ -40,8 +44,11 @@ public class HistoryFragment extends Fragment {
         if (getContext() != null) {
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
         }
+        //инициализируем средства для работы с БД Room
+        HistoryDao historyDao = App.getInstance().getHistoryDao();
+        HistorySource historySource = new HistorySource(historyDao);
         //инициализируем адаптер
-        HistoryAdapter historyAdapter = new HistoryAdapter(dataCity, dataTemp);
+        HistoryAdapter historyAdapter = new HistoryAdapter(historySource);
         //устанавливаем нашему списку адаптер
         recyclerView.setAdapter(historyAdapter);
     }
