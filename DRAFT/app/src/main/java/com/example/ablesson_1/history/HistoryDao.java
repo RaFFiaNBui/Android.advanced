@@ -29,4 +29,16 @@ public interface HistoryDao {
     //Получаем количество записей в таблице
     @Query("SELECT COUNT() FROM LineOfHistory")
     long getCountLinesOfHistory();
+
+    // Получим данные только об одном городе
+    @Query("SELECT * FROM lineofhistory WHERE city = :city")
+    List<LineOfHistory> getHistoryByName(String city);
+
+    // Получим данные только по дате
+    @Query("SELECT * FROM lineofhistory WHERE date = :date")
+    List<LineOfHistory> getHistoryByDate(long date);
+
+    // Получим данные только по температуре
+    @Query("SELECT * FROM lineofhistory WHERE temperature = :temp")
+    List<LineOfHistory> getHistoryByTemperature(String temp);
 }

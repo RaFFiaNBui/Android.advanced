@@ -43,4 +43,19 @@ public class HistorySource {
     public void deleteLine(LineOfHistory lineOfHistory) {
         historyDao.deleteLineOfHistory(lineOfHistory);
     }
+
+    //Получим данные только об одном городе
+    public void getHistoryByName (String name) {
+        historyDao.getHistoryByName(name);
+    }
+
+    // Получим данные только по дате
+    public void getHistoryByDate (long date) {
+        historyDao.getHistoryByDate(date);
+    }
+
+    // Получим данные только по температуре
+    public void getHistoryByTemperature (String temp) {
+        historyDao.getHistoryByTemperature(temp);
+    }
 }
