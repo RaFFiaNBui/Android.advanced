@@ -8,31 +8,36 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="10dp">
 
         <TextView
             android:id="@+id/item_history_city"
             style="@style/MyTextStyleSerifBold"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_weight="0.6"
+            android:layout_weight="0.55"
             android:gravity="center_vertical"
             tools:text="Москва" />
 
         <TextView
             android:id="@+id/item_history_temp"
             style="@style/MyTextStyleSerifBold"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginEnd="30dp"
-            android:layout_weight="0.4"
+            android:layout_weight="0.1"
             android:gravity="end"
-            tools:text="8" />
+            tools:text="14" />
+
+        <TextView
+            android:id="@+id/item_history_date"
+            style="@style/MyTextStyleSerifBold"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.35"
+            android:gravity="end"
+            tools:text="28.04.2020" />
     </LinearLayout>
 
     <TextView
