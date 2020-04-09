@@ -16,11 +16,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.ablesson_1.history.App;
+import com.example.ablesson_1.history.HistoryDao;
+import com.example.ablesson_1.history.HistorySource;
+import com.example.ablesson_1.history.LineOfHistory;
 import com.example.ablesson_1.model.WeatherRequest;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
@@ -35,13 +38,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.content.Context.MODE_PRIVATE;
 
+//import java.util.ArrayList; //неиспользуется после подключения Room
+
 public class CityFragment extends Fragment implements Constants {
 
     private static final String WEATHER_API_KEY = "14f34cd242746f2d76bb04739d7485fe"; //временный Api
     private String currentCity;  //будет привязана геолокация
 
-    private static ArrayList<String> citiesList = new ArrayList<>();        //для экрана истории
-    private static ArrayList<String> temperatureList = new ArrayList<>();   //для экрана истории
+/*    private static ArrayList<String> citiesList = new ArrayList<>();        //для экрана истории //неиспользуется после подключения Room
+    private static ArrayList<String> temperatureList = new ArrayList<>();   //для экрана истории //неиспользуется после подключения Room*/
 
     private TextView currentName;
     private TextView currentTemperature;
@@ -131,7 +136,7 @@ public class CityFragment extends Fragment implements Constants {
         //Если это 1 запуск, то берем настройки из SharedPreference, если нет - из Parcel
         //В дальнейшем Parcel можно убрать вообще и использовать только SharedPreference
         if (parcel == null) {
-            SharedPreferences sPref = getActivity().getSharedPreferences(SHARED_PREFERENCE_KEY, MODE_PRIVATE);
+            SharedPreferences sPref = Objects.requireNonNull(getActivity()).getSharedPreferences(SHARED_PREFERENCE_KEY, MODE_PRIVATE);
             currentCity = sPref.getString(CITY, "Москва");
         } else {
             currentCity = parcel.getCityName();
@@ -237,19 +242,19 @@ public class CityFragment extends Fragment implements Constants {
         currentName = view.findViewById(R.id.city);
     }
 
-    //метод сохранения истории
-    private void saveHistory(String temp) {
+/*    //метод сохранения истории
+    private void saveHistory(String temp) { //неиспользуется после подключения Room
         citiesList.add(currentCity);
         temperatureList.add(temp);
     }
 
-    static ArrayList<String> getCitiesList() {
+    static ArrayList<String> getCitiesList() { //неиспользуется после подключения Room
         return citiesList;
     }
 
-    static ArrayList<String> getTemperatureList() {
+    static ArrayList<String> getTemperatureList() { //неиспользуется после подключения Room
         return temperatureList;
-    }
+    }*/
 
     private void initRetrofit() {
         Retrofit retrofit;
@@ -272,8 +277,8 @@ public class CityFragment extends Fragment implements Constants {
         // сначала создаем OkHttpClient, ему передаем HttpLoggingInterceptor, и уже этот
         // OkHttpClient используем в Retrofit билдере
         return new OkHttpClient.Builder()
-                            .addInterceptor(interceptor)
-                            .build();
+                .addInterceptor(interceptor)
+                .build();
     }
 
     private void requestRetrofit(String city, String units, String lang) {
@@ -293,13 +298,16 @@ public class CityFragment extends Fragment implements Constants {
                             SimpleDateFormat smp = new SimpleDateFormat("HH:mm", Locale.getDefault());
                             sunrise.setText(String.format(Locale.getDefault(), "%s", smp.format(response.body().getSys().getSunrise() * 1000L)));
                             sunset.setText(String.format(Locale.getDefault(), "%s", smp.format(response.body().getSys().getSunset() * 1000L)));
-                            saveHistory(temp);
-                            saveCity();
+                            //saveHistory(temp);    //неиспользуется после подключения Room
+                            saveHistoryRoom(temp);  //сохранение истории в БД Room
+                            saveCity(); //сохранение текущего города в SharedPreference
                         } else {
                             Log.e("MyLog", "onResponse: Город не был найден на сервере code=" + response.code() + " message=" + response.message());
                             String message = getResources().getString(R.string.error_msg_part_1) + city + getResources().getString(R.string.error_msg_part_2);
                             //создаем диалоговое окно с необходимым нам сообщением
-                            MyDialogFragment.create(message).show(getFragmentManager(), "Exception");
+                            if (getFragmentManager() != null) {
+                                MyDialogFragment.create(message).show(getFragmentManager(), "Exception");
+                            }
                         }
                     }
 
@@ -308,13 +316,27 @@ public class CityFragment extends Fragment implements Constants {
                         Log.e("MyLog", "onFailure: Ошибка соединения", t);  //код в случае ошибки соединения
                         String message = getResources().getString(R.string.fail_connection);
                         //создаем диалоговое окно с необходимым нам сообщением
-                        MyDialogFragment.create(message).show(getFragmentManager(), "Exception");
+                        if (getFragmentManager() != null) {
+                            MyDialogFragment.create(message).show(getFragmentManager(), "Exception");
+                        }
                     }
                 });
     }
 
+    //сохранение истории в БД Room
+    private void saveHistoryRoom(String temp) {
+        HistoryDao historyDao = App.getInstance().getHistoryDao();
+        HistorySource historySource = new HistorySource(historyDao);
+        LineOfHistory lineOfHistory = new LineOfHistory();
+        lineOfHistory.cityName = currentCity;
+        lineOfHistory.cityTemp = temp;
+        lineOfHistory.date = (System.currentTimeMillis() / 1000);
+        historySource.addLine(lineOfHistory);
+    }
+
+    //сохранение текущего города в SharedPreference
     private void saveCity() {
-        SharedPreferences preferences = getActivity().getSharedPreferences(SHARED_PREFERENCE_KEY, MODE_PRIVATE);
+        SharedPreferences preferences = Objects.requireNonNull(getActivity()).getSharedPreferences(SHARED_PREFERENCE_KEY, MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(CITY, currentCity);
         editor.apply();
