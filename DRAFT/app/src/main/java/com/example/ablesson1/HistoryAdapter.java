@@ -1,6 +1,5 @@
 package com.example.ablesson1;
 
-import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,18 +21,19 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
     //private ArrayList<String> dataCity;
     //private ArrayList<String> dataTemp;
 
-    private Activity activity;
     //источник данных
     private HistorySource dataSource;
     //позиция в списке, на которой было нажато меню
     private long menuPosition;
+    //лисенер, который регистрирует контекстное меню во фрагменте
+    private HistoryFragment.ContextMenuListener contextMenuListener;
 
     HistoryAdapter(/*ArrayList<String> dataSity, ArrayList<String> dataTemp*/
-            HistorySource historySource, Activity activity) {
+            HistorySource historySource, HistoryFragment.ContextMenuListener contextMenuListener) {
         /*this.dataCity = dataSity;
         this.dataTemp = dataTemp;*/
         this.dataSource = historySource;
-        this.activity = activity;
+        this.contextMenuListener = contextMenuListener;
     }
 
     @NonNull
@@ -57,9 +57,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
         });
 
         //регистрируем контекстное меню
-        if (activity != null) {
-            activity.registerForContextMenu(holder.cardView);
-        }
+        contextMenuListener.registerMenu(holder.cardView);
     }
 
     @Override
