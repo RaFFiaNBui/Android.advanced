@@ -29,10 +29,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
     private long menuPosition;
 
     HistoryAdapter(/*ArrayList<String> dataSity, ArrayList<String> dataTemp*/
-            HistorySource dataSource, Activity activity) {
+            HistorySource historySource, Activity activity) {
         /*this.dataCity = dataSity;
         this.dataTemp = dataTemp;*/
-        this.dataSource = dataSource;
+        this.dataSource = historySource;
         this.activity = activity;
     }
 
@@ -46,13 +46,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
     @Override
     public void onBindViewHolder(@NonNull HistoryHolder holder, int position) {
         //holder.setData(dataCity.get(position), dataTemp.get(position));
-        List<LineOfHistory> lines = dataSource.getLines();
-        LineOfHistory lineOfHistory = lines.get(position);
+        List<LineOfHistory> lines = dataSource.getLines();   //получили весь список
+        LineOfHistory lineOfHistory = lines.get(position);  //проходим по списку
         holder.setData(lineOfHistory.cityName, lineOfHistory.cityTemp, lineOfHistory.date);
 
-        //определяем какой пункт меню был нажат
+        //вешаем слушатель на длительное нажатие
         holder.cardView.setOnLongClickListener(view -> {
-            menuPosition = position;
+            menuPosition = position;    //определяем какой пункт меню был нажат
             return false;
         });
 
@@ -67,10 +67,11 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
         return dataCity.size();
     }*/
     public int getItemCount() {
-        return (int) dataSource.getCountLines();
+        return dataSource.getCountLines();
     }
 
-    public long getMenuPosition() {
+    //package-private
+    long getMenuPosition() {
         return menuPosition;
     }
 
@@ -79,7 +80,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
         private TextView textViewCity;
         private TextView textViewTemp;
         private TextView textViewDate;
-        View cardView;
+        View cardView;  //view всего элемента списка(для нажатий в любой точке)
 
         HistoryHolder(@NonNull View itemView) {
             super(itemView);
