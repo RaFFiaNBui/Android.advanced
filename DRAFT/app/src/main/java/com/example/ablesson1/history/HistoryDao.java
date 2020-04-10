@@ -18,7 +18,7 @@ public interface HistoryDao {
     @Insert
     void insertLineOfHistory(LineOfHistory lineOfHistory);
 
-    // Удаляем данные строки
+    // Удаляем данную строку
     @Delete
     void deleteLineOfHistory(LineOfHistory lineOfHistory);
 
@@ -41,4 +41,10 @@ public interface HistoryDao {
     // Получим данные только по температуре
     @Query("SELECT * FROM lineofhistory WHERE temperature = :temp")
     List<LineOfHistory> getHistoryByTemperature(String temp);
+
+    //очистить БД
+    @Query("DELETE FROM lineofhistory")
+    int deleteAll();
+
+
 }
