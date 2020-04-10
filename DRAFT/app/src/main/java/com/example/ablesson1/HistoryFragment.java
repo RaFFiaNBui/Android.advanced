@@ -27,6 +27,21 @@ public class HistoryFragment extends Fragment {
     private HistoryAdapter historyAdapter;
     private HistorySource historySource;
 
+    //интерфейс слушателя для регистрации контекстного меню списка RecyclerView
+    public interface ContextMenuListener {
+        void registerMenu(View view);
+    }
+
+    //реализация слушателя контекстного меню полная
+/*    private final ContextMenuListener contextMenuListener = new ContextMenuListener() {
+        @Override
+        public void registerMenu(View view) {
+            registerForContextMenu(view);
+        }
+    };*/
+    //та же реализация но с лямбдой и method reference
+    private final ContextMenuListener contextMenuListener = this::registerForContextMenu;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -60,7 +75,7 @@ public class HistoryFragment extends Fragment {
         //загружаем историю из БД
         historySource.loadLines();
         //инициализируем адаптер
-        historyAdapter = new HistoryAdapter(historySource, getActivity());
+        historyAdapter = new HistoryAdapter(historySource, contextMenuListener);
         //устанавливаем нашему списку адаптер
         recyclerView.setAdapter(historyAdapter);
     }
