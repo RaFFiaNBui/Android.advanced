@@ -1,4 +1,4 @@
-package com.example.ablesson_1;
+package com.example.ablesson1;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,7 +15,6 @@ import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
@@ -154,19 +153,21 @@ public class BaseActivity extends AppCompatActivity implements Constants, Naviga
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case (R.id.nav_Start) :
-                FragmentManager fm = getSupportFragmentManager();
-                fm.popBackStack();
+                MainFragment mainFragment = new MainFragment();
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.add(R.id.first_fragment, mainFragment);
+                ft.commit();
                 break;
             case (R.id.nav_Settings) :
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivityForResult(intent, SETTINGS_CODE);
                 break;
             case (R.id.nav_history) :
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                FragmentTransaction ft1 = getSupportFragmentManager().beginTransaction();
                 HistoryFragment historyFragment = new HistoryFragment();
-                ft.replace(R.id.first_fragment, historyFragment);
-                ft.addToBackStack("Start");
-                ft.commit();
+                ft1.replace(R.id.first_fragment, historyFragment);
+                ft1.addToBackStack("Start");
+                ft1.commit();
                 break;
             case (R.id.nav_Developers) :
                 Intent intentDev = new Intent(this, DevelopersActivity.class);

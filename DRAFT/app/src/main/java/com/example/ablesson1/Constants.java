@@ -1,4 +1,4 @@
-package com.example.ablesson_1;
+package com.example.ablesson1;
 
 public interface Constants {
     String CITY = "City";

@@ -1,6 +1,6 @@
-package com.example.ablesson_1;
+package com.example.ablesson1;
 
-import com.example.ablesson_1.model.WeatherRequest;
+import com.example.ablesson1.model.WeatherRequest;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

@@ -1,4 +1,4 @@
-package com.example.ablesson_1;
+package com.example.ablesson1;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,15 +16,20 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.ablesson_1.model.WeatherRequest;
+import com.example.ablesson1.history.App;
+import com.example.ablesson1.history.HistoryDao;
+import com.example.ablesson1.history.HistorySource;
+import com.example.ablesson1.history.LineOfHistory;
+import com.example.ablesson1.model.WeatherRequest;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,13 +38,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.content.Context.MODE_PRIVATE;
 
+//import java.util.ArrayList; //неиспользуется после подключения Room
+
 public class CityFragment extends Fragment implements Constants {
 
     private static final String WEATHER_API_KEY = "14f34cd242746f2d76bb04739d7485fe"; //временный Api
-    private String currentCity = "Moscow";  //будет привязана геолокация
+    private String currentCity;  //будет привязана геолокация
 
-    private static ArrayList<String> citiesList = new ArrayList<>();        //для экрана истории
-    private static ArrayList<String> temperatureList = new ArrayList<>();   //для экрана истории
+/*    private static ArrayList<String> citiesList = new ArrayList<>();        //для экрана истории //неиспользуется после подключения Room
+    private static ArrayList<String> temperatureList = new ArrayList<>();   //для экрана истории //неиспользуется после подключения Room*/
 
     private TextView currentName;
     private TextView currentTemperature;
@@ -126,8 +133,15 @@ public class CityFragment extends Fragment implements Constants {
         TextView textViewCity = layout.findViewById(R.id.city);
         changeSettings(layout);
         Parcel parcel = getParcel();
-        textViewCity.setText(parcel.getCityName());
-        currentCity = parcel.getCityName();
+        //Если это 1 запуск, то берем настройки из SharedPreference, если нет - из Parcel
+        //В дальнейшем Parcel можно убрать вообще и использовать только SharedPreference
+        if (parcel == null) {
+            SharedPreferences sPref = Objects.requireNonNull(getActivity()).getSharedPreferences(SHARED_PREFERENCE_KEY, MODE_PRIVATE);
+            currentCity = sPref.getString(CITY, "Москва");
+        } else {
+            currentCity = parcel.getCityName();
+        }
+        textViewCity.setText(currentCity);
         return layout;
     }
 
@@ -228,27 +242,43 @@ public class CityFragment extends Fragment implements Constants {
         currentName = view.findViewById(R.id.city);
     }
 
-    //метод сохранения истории
-    private void saveHistory(String temp) {
+/*    //метод сохранения истории
+    private void saveHistory(String temp) { //неиспользуется после подключения Room
         citiesList.add(currentCity);
         temperatureList.add(temp);
     }
 
-    static ArrayList<String> getCitiesList() {
+    static ArrayList<String> getCitiesList() { //неиспользуется после подключения Room
         return citiesList;
     }
 
-    static ArrayList<String> getTemperatureList() {
+    static ArrayList<String> getTemperatureList() { //неиспользуется после подключения Room
         return temperatureList;
-    }
+    }*/
 
     private void initRetrofit() {
         Retrofit retrofit;
         retrofit = new Retrofit.Builder()
                 .baseUrl("http://api.openweathermap.org/")  //базовая часть адреса
                 .addConverterFactory(GsonConverterFactory.create()) //конвертер для преобразования из json в объкект
+                .client(getLoggingOkHttpClient())
                 .build();
         openWeather = retrofit.create(OpenWeather.class);   //создаем объект при помощи которогобудем выполнять запросы
+    }
+
+    private OkHttpClient getLoggingOkHttpClient() {
+        //Сначала создаем HttpLoggingInterceptor. В нем настраиваем уровень логирования.
+        // Если у нас Debug билд, то выставляем максимальный уровень (BODY), иначе - ничего
+        // не логируем, чтобы не палить в логах релизные запросы.
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(BuildConfig.DEBUG ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
+
+        //HttpLoggingInterceptor мы не можем напрямую передать в Retrofit билдер. Поэтому
+        // сначала создаем OkHttpClient, ему передаем HttpLoggingInterceptor, и уже этот
+        // OkHttpClient используем в Retrofit билдере
+        return new OkHttpClient.Builder()
+                .addInterceptor(interceptor)
+                .build();
     }
 
     private void requestRetrofit(String city, String units, String lang) {
@@ -259,34 +289,56 @@ public class CityFragment extends Fragment implements Constants {
                         if (response.body() != null) {
                             String temp = String.format(Locale.getDefault(), "%d", response.body().getMain().getTemp());
                             currentTemperature.setText(temp);
-
-                            int humidity = response.body().getMain().getHumidity();
-                            currentHumidity.setText(Integer.toString(humidity));
-
+                            currentHumidity.setText(String.format(Locale.getDefault(), "%d", response.body().getMain().getHumidity()));
                             currentPressure.setText(String.format(Locale.getDefault(), "%d", response.body().getMain().getPressure()));
-
+                            windSpeed.setText(String.format(Locale.getDefault(), "%d", response.body().getWind().getSpeed()));
+                            currentCity = String.format(Locale.getDefault(), "%s", response.body().getName());
+                            currentName.setText(currentCity);
+                            //Время восхода и заката приводим к привычному виду
                             SimpleDateFormat smp = new SimpleDateFormat("HH:mm", Locale.getDefault());
                             sunrise.setText(String.format(Locale.getDefault(), "%s", smp.format(response.body().getSys().getSunrise() * 1000L)));
                             sunset.setText(String.format(Locale.getDefault(), "%s", smp.format(response.body().getSys().getSunset() * 1000L)));
-                            windSpeed.setText(String.format(Locale.getDefault(), "%d", response.body().getWind().getSpeed()));
-                            currentName.setText(String.format(Locale.getDefault(), "%s", response.body().getName()));
-                            saveHistory(temp);
+                            //saveHistory(temp);    //неиспользуется после подключения Room
+                            saveHistoryRoom(temp);  //сохранение истории в БД Room
+                            saveCity(); //сохранение текущего города в SharedPreference
                         } else {
                             Log.e("MyLog", "onResponse: Город не был найден на сервере code=" + response.code() + " message=" + response.message());
                             String message = getResources().getString(R.string.error_msg_part_1) + city + getResources().getString(R.string.error_msg_part_2);
                             //создаем диалоговое окно с необходимым нам сообщением
-                            MyDialogFragment.create(message).show(getFragmentManager(), "Exception");
+                            if (getFragmentManager() != null) {
+                                MyDialogFragment.create(message).show(getFragmentManager(), "Exception");
+                            }
                         }
                     }
 
                     @Override
                     public void onFailure(Call<WeatherRequest> call, Throwable t) {
                         Log.e("MyLog", "onFailure: Ошибка соединения", t);  //код в случае ошибки соединения
-                        t.printStackTrace();
                         String message = getResources().getString(R.string.fail_connection);
                         //создаем диалоговое окно с необходимым нам сообщением
-                        MyDialogFragment.create(message).show(getFragmentManager(), "Exception");
+                        if (getFragmentManager() != null) {
+                            MyDialogFragment.create(message).show(getFragmentManager(), "Exception");
+                        }
                     }
                 });
+    }
+
+    //сохранение истории в БД Room
+    private void saveHistoryRoom(String temp) {
+        HistoryDao historyDao = App.getInstance().getHistoryDao();
+        HistorySource historySource = new HistorySource(historyDao);
+        LineOfHistory lineOfHistory = new LineOfHistory();
+        lineOfHistory.cityName = currentCity;
+        lineOfHistory.cityTemp = temp;
+        lineOfHistory.date = (System.currentTimeMillis() / 1000);
+        historySource.addLine(lineOfHistory);
+    }
+
+    //сохранение текущего города в SharedPreference
+    private void saveCity() {
+        SharedPreferences preferences = Objects.requireNonNull(getActivity()).getSharedPreferences(SHARED_PREFERENCE_KEY, MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(CITY, currentCity);
+        editor.apply();
     }
 }

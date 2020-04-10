@@ -1,4 +1,4 @@
-package com.example.ablesson_1;
+package com.example.ablesson1;
 
 import android.app.Dialog;
 import android.content.DialogInterface;

@@ -1,13 +1,4 @@
-package com.example.ablesson_1;
-
-import android.os.Handler;
-import android.util.Log;
-
-import com.example.ablesson_1.model.WeatherRequest;
-import com.google.gson.Gson;
-
-import java.text.SimpleDateFormat;
-import java.util.Locale;
+package com.example.ablesson1;
 
 //данный класс работал в паре с Connection до подключения библиотеки Retrofit
 /*class DataParsing {

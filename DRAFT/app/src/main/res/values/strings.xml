@@ -41,4 +41,11 @@
     <string name="fail_connection">Fail connection</string>
     <string name="error_msg_part_1"> \"</string>
     <string name="error_msg_part_2">\" city not found</string>
+
+    <string name="all_history">All History</string>
+    <string name="filter_by_city">Filter by city</string>
+    <string name="filter_by_date">Filter by date</string>
+    <string name="filter_by_temp">Filter by temperature</string>
+    <string name="delete_position">Delete position</string>
+    <string name="delete_all">Delete All</string>
 </resources>
