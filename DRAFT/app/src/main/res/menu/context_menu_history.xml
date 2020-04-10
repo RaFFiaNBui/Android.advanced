@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/history_filter_by_city"
+        android:title="@string/filter_by_city" />
+    <item
+        android:id="@+id/history_filter_by_date"
+        android:title="@string/filter_by_date" />
+    <item
+        android:id="@+id/history_filter_by_temp"
+        android:title="@string/filter_by_temp" />
+    <item
+        android:id="@+id/history_delete"
+        android:title="@string/delete" />
+    <item
+        android:id="@+id/history_delete_all"
+        android:title="@string/delete_all" />
+
+</menu>
