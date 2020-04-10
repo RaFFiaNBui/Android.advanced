@@ -42,4 +42,10 @@
     <string name="fail_connection">Ошибка соединения</string>
     <string name="error_msg_part_1">Город \"</string>
     <string name="error_msg_part_2">\" не найден</string>
+
+    <string name="filter_by_city">Фильтр по городу</string>
+    <string name="filter_by_date">Фильтр по дате</string>
+    <string name="filter_by_temp">Фильтр по температуре</string>
+    <string name="delete">Удалить строку</string>
+    <string name="delete_all">Очистить историю</string>
 </resources>
