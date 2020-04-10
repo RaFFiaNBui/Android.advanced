@@ -57,6 +57,8 @@ public class HistoryFragment extends Fragment {
         //инициализируем средства для работы с БД Room
         HistoryDao historyDao = App.getInstance().getHistoryDao();
         historySource = new HistorySource(historyDao);
+        //загружаем историю из БД
+        historySource.loadLines();
         //инициализируем адаптер
         historyAdapter = new HistoryAdapter(historySource, getActivity());
         //устанавливаем нашему списку адаптер
@@ -73,30 +75,37 @@ public class HistoryFragment extends Fragment {
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
+        LineOfHistory lineOfHistory = historySource.getLines().get((int) historyAdapter.getMenuPosition());
         switch (id) {
-            case R.id.history_filter_by_city:
-                historySource.getHistoryByName("Кострома");
+            case R.id.no_filter:
+                historySource.loadLines();
                 historyAdapter.notifyDataSetChanged();
-                Toast.makeText(getContext(), "111111111111", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Вся история", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.history_filter_by_city:
+                historySource.getHistoryByName(lineOfHistory.cityName);
+                historyAdapter.notifyDataSetChanged();
+                Toast.makeText(getContext(), "Фильтр: " + lineOfHistory.cityName, Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.history_filter_by_date:
-                historySource.getHistoryByDate(1586390400);
+                historySource.getHistoryByDate(lineOfHistory.date);
                 historyAdapter.notifyDataSetChanged();
-                Toast.makeText(getContext(), "22222222222222", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Фильтр: " + lineOfHistory.date, Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.history_filter_by_temp:
-                historySource.getHistoryByTemperature("14");
+                historySource.getHistoryByTemperature(lineOfHistory.cityTemp);
                 historyAdapter.notifyDataSetChanged();
-                Toast.makeText(getContext(), "333333333333", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Фильтр: " + lineOfHistory.cityTemp, Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.history_delete:
-                LineOfHistory lineOfHistory = historySource.getLines().get((int) historyAdapter.getMenuPosition());
                 historySource.deleteLine(lineOfHistory);
                 historyAdapter.notifyItemRemoved((int) historyAdapter.getMenuPosition());
-                Toast.makeText(getContext(), "44444444444444", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Позиция удалена", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.history_delete_all:
-                Toast.makeText(getContext(), "555555555555", Toast.LENGTH_SHORT).show();
+                historySource.deleteAll();
+                historyAdapter.notifyDataSetChanged();
+                Toast.makeText(getContext(), "История очищенна", Toast.LENGTH_SHORT).show();
                 return true;
         }
         return super.onContextItemSelected(item);
