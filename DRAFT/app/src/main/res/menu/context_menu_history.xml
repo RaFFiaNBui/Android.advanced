@@ -2,6 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/no_filter"
+        android:title="@string/all_history" />
+    <item
         android:id="@+id/history_filter_by_city"
         android:title="@string/filter_by_city" />
     <item
@@ -10,11 +13,11 @@
     <item
         android:id="@+id/history_filter_by_temp"
         android:title="@string/filter_by_temp" />
+
     <item
         android:id="@+id/history_delete"
-        android:title="@string/delete" />
+        android:title="@string/delete_position" />
     <item
         android:id="@+id/history_delete_all"
         android:title="@string/delete_all" />
-
 </menu>
