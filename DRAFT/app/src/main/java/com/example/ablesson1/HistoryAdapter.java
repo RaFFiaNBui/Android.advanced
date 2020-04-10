@@ -1,5 +1,6 @@
 package com.example.ablesson1;
 
+import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,13 +22,18 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
     //private ArrayList<String> dataCity;
     //private ArrayList<String> dataTemp;
 
+    private Activity activity;
+    //источник данных
     private HistorySource dataSource;
+    //позиция в списке, на которой было нажато меню
+    private long menuPosition;
 
     HistoryAdapter(/*ArrayList<String> dataSity, ArrayList<String> dataTemp*/
-            HistorySource dataSource) {
+            HistorySource dataSource, Activity activity) {
         /*this.dataCity = dataSity;
         this.dataTemp = dataTemp;*/
         this.dataSource = dataSource;
+        this.activity = activity;
     }
 
     @NonNull
@@ -40,9 +46,20 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
     @Override
     public void onBindViewHolder(@NonNull HistoryHolder holder, int position) {
         //holder.setData(dataCity.get(position), dataTemp.get(position));
-        List<LineOfHistory> linies = dataSource.getLines();
-        LineOfHistory lineOfHistory = linies.get(position);
+        List<LineOfHistory> lines = dataSource.getLines();
+        LineOfHistory lineOfHistory = lines.get(position);
         holder.setData(lineOfHistory.cityName, lineOfHistory.cityTemp, lineOfHistory.date);
+
+        //определяем какой пункт меню был нажат
+        holder.cardView.setOnLongClickListener(view -> {
+            menuPosition = position;
+            return false;
+        });
+
+        //регистрируем контекстное меню
+        if (activity != null) {
+            activity.registerForContextMenu(holder.cardView);
+        }
     }
 
     @Override
@@ -53,14 +70,20 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.HistoryH
         return (int) dataSource.getCountLines();
     }
 
+    public long getMenuPosition() {
+        return menuPosition;
+    }
+
     class HistoryHolder extends RecyclerView.ViewHolder {
 
         private TextView textViewCity;
         private TextView textViewTemp;
         private TextView textViewDate;
+        View cardView;
 
         HistoryHolder(@NonNull View itemView) {
             super(itemView);
+            cardView = itemView;
             textViewCity = itemView.findViewById(R.id.item_history_city);
             textViewTemp = itemView.findViewById(R.id.item_history_temp);
             textViewDate = itemView.findViewById(R.id.item_history_date);
