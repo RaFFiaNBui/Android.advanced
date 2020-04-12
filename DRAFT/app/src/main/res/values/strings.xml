@@ -48,4 +48,6 @@
     <string name="filter_by_temp">Filter by temperature</string>
     <string name="delete_position">Delete position</string>
     <string name="delete_all">Delete All</string>
+    <string name="receiver_title">My Broadcast Receiver</string>
+    <string name="low_battery">Low battery</string>
 </resources>

@@ -49,4 +49,6 @@
     <string name="filter_by_temp">Фильтр по температуре</string>
     <string name="delete_position">Удалить позицию</string>
     <string name="delete_all">Очистить историю</string>
+    <string name="receiver_title">My Broadcast Receiver</string>
+    <string name="low_battery">Низкий заряд батареи</string>
 </resources>
