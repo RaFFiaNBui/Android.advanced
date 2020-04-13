@@ -5,7 +5,6 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +22,7 @@ public class MainActivity extends BaseActivity {
 
     private MyBroadcastReceiver receiver = new MyBroadcastReceiver();
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,9 +33,10 @@ public class MainActivity extends BaseActivity {
         showFirstScreen(savedInstanceState);
         //инициализация канала нотификаций
         initNotificationChannel();
-        //програмная регистрация ресивера о низком заряде батареи
+        //програмная регистрация ресиверов о низком заряде батареи и доступности сети
         registerReceiver(receiver, new IntentFilter(Intent.ACTION_BATTERY_LOW));
-        registerReceiver(receiver, new IntentFilter(ConnectivityManager.EXTRA_NO_CONNECTIVITY));
+        registerReceiver(receiver, new IntentFilter(NETWORK_IS_CONNECTED));
+        //получение токена
         initGetToken();
     }
 
