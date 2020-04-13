@@ -21,7 +21,7 @@ import com.google.firebase.iid.InstanceIdResult;
 
 public class MainActivity extends BaseActivity {
 
-    MyBroadcastReceiver receiver = new MyBroadcastReceiver();
+    private MyBroadcastReceiver receiver = new MyBroadcastReceiver();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,5 +78,12 @@ public class MainActivity extends BaseActivity {
                         Toast.makeText(MainActivity.this, "Token received", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    //разрегистрируем ресивер при закрытии приложения
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
     }
 }
