@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1073264032235",
+    "firebase_url": "https://ablesson-1.firebaseio.com",
+    "project_id": "ablesson-1",
+    "storage_bucket": "ablesson-1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1073264032235:android:307cd70ef3a7a0aa3381ae",
+        "android_client_info": {
+          "package_name": "com.example.ablesson_1"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1073264032235-d8rc583ksr9giqb6mftjp8gvv4mpt1pm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ablesson_1",
+            "certificate_hash": "9c90536ba7df8af3fe61315250dcf5fa76416d18"
+          }
+        },
+        {
+          "client_id": "1073264032235-6pstok1g983egbrmcnak61e1e5iqot85.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBR3F0mq6IMDnpP0zBSzmQZEKHhhgRBkb4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1073264032235-6pstok1g983egbrmcnak61e1e5iqot85.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

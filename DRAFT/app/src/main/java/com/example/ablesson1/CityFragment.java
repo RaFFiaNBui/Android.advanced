@@ -1,6 +1,10 @@
 package com.example.ablesson1;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -187,6 +191,8 @@ public class CityFragment extends Fragment implements Constants {
             lang = "en";
             units = "imperial";
         }
+        //проверка сети
+        checkConnection();
         //установка соединения по средствам Retrofit
         initRetrofit();
         requestRetrofit(currentCity, units, lang);
@@ -255,6 +261,16 @@ public class CityFragment extends Fragment implements Constants {
     static ArrayList<String> getTemperatureList() { //неиспользуется после подключения Room
         return temperatureList;
     }*/
+
+    //проверка доступности сети
+    private void checkConnection() {
+        ConnectivityManager connManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connManager.getActiveNetworkInfo();
+        Intent intent = new Intent(NETWORK_IS_CONNECTED);
+        if (!Objects.requireNonNull(networkInfo).isConnected()) {
+            getActivity().sendBroadcast(intent);
+        }
+    }
 
     private void initRetrofit() {
         Retrofit retrofit;
