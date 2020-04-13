@@ -10,6 +10,8 @@ import androidx.core.app.NotificationCompat;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+//данная служба созана только для того, чтобы получать уведомления при
+//запущенном приложении. Сюда можно прописать поведение
 public class MyFirebaseService extends FirebaseMessagingService {
 
     private int messageId = 0;
