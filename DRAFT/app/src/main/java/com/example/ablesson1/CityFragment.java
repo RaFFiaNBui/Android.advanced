@@ -1,8 +1,14 @@
 package com.example.ablesson1;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -16,6 +22,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -40,6 +47,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static android.content.Context.LOCATION_SERVICE;
 import static android.content.Context.MODE_PRIVATE;
 
 //import java.util.ArrayList; //неиспользуется после подключения Room
@@ -60,7 +68,10 @@ public class CityFragment extends Fragment implements Constants {
     private TextView currentPressure;
     private TextView windSpeed;
 
-    private OpenWeather openWeather;
+    private String lang;  //выбор языка
+    private String units; //выбор системы измерений
+    private WeatherRequestByCity weatherRequestByCity;
+    private WeatherRequestByLocation weatherRequestByLocation;
 
     //версия 2 использовалась с классом Connection и DataParsing
 /*    public interface OnDataLoadedListener {
@@ -182,8 +193,6 @@ public class CityFragment extends Fragment implements Constants {
         //устанавливаем соединение версия 2 использовалась с классом Connection и DataParsing
         //new Connection(currentCity, onDataLoadedListener, exceptionListener);
         // установка параметров для запроса
-        String lang;  //выбор языка
-        final String units; //выбор системы измерений
         if (Locale.getDefault().getLanguage().equals("ru")) {
             lang = "ru";
             units = "metric";
@@ -193,9 +202,15 @@ public class CityFragment extends Fragment implements Constants {
         }
         //проверка сети
         checkConnection();
-        //установка соединения по средствам Retrofit
-        initRetrofit();
-        requestRetrofit(currentCity, units, lang);
+
+        if (getArguments() == null) {
+            //Запрашиваем Permission’ы и координаты
+            requestPermissions();
+        } else {
+            //установка соединения по средствам Retrofit
+            initRetrofit();
+            requestRetrofit(currentCity, units, lang);
+        }
     }
 
     //метод отрисовки необходимых настроек
@@ -279,7 +294,8 @@ public class CityFragment extends Fragment implements Constants {
                 .addConverterFactory(GsonConverterFactory.create()) //конвертер для преобразования из json в объкект
                 .client(getLoggingOkHttpClient())
                 .build();
-        openWeather = retrofit.create(OpenWeather.class);   //создаем объект при помощи которогобудем выполнять запросы
+        weatherRequestByCity = retrofit.create(WeatherRequestByCity.class);   //создаем объект при помощи которогобудем выполнять запросы
+        weatherRequestByLocation = retrofit.create(WeatherRequestByLocation.class);   //создаем объект при помощи которогобудем выполнять запросы
     }
 
     private OkHttpClient getLoggingOkHttpClient() {
@@ -298,45 +314,54 @@ public class CityFragment extends Fragment implements Constants {
     }
 
     private void requestRetrofit(String city, String units, String lang) {
-        openWeather.loadWeather(city, units, lang, CityFragment.WEATHER_API_KEY)
-                .enqueue(new Callback<WeatherRequest>() {
-                    @Override
-                    public void onResponse(Call<WeatherRequest> call, Response<WeatherRequest> response) {
-                        if (response.body() != null) {
-                            String temp = String.format(Locale.getDefault(), "%d", response.body().getMain().getTemp());
-                            currentTemperature.setText(temp);
-                            currentHumidity.setText(String.format(Locale.getDefault(), "%d", response.body().getMain().getHumidity()));
-                            currentPressure.setText(String.format(Locale.getDefault(), "%d", response.body().getMain().getPressure()));
-                            windSpeed.setText(String.format(Locale.getDefault(), "%d", response.body().getWind().getSpeed()));
-                            currentCity = String.format(Locale.getDefault(), "%s", response.body().getName());
-                            currentName.setText(currentCity);
-                            //Время восхода и заката приводим к привычному виду
-                            SimpleDateFormat smp = new SimpleDateFormat("HH:mm", Locale.getDefault());
-                            sunrise.setText(String.format(Locale.getDefault(), "%s", smp.format(response.body().getSys().getSunrise() * 1000L)));
-                            sunset.setText(String.format(Locale.getDefault(), "%s", smp.format(response.body().getSys().getSunset() * 1000L)));
-                            //saveHistory(temp);    //неиспользуется после подключения Room
-                            saveHistoryRoom(temp);  //сохранение истории в БД Room
-                            saveCity(); //сохранение текущего города в SharedPreference
-                        } else {
-                            Log.e("MyLog", "onResponse: Город не был найден на сервере code=" + response.code() + " message=" + response.message());
-                            String message = getResources().getString(R.string.error_msg_part_1) + city + getResources().getString(R.string.error_msg_part_2);
-                            //создаем диалоговое окно с необходимым нам сообщением
-                            if (getFragmentManager() != null) {
-                                MyDialogFragment.create(message).show(getFragmentManager(), "Exception");
-                            }
-                        }
-                    }
+        weatherRequestByCity.loadWeather(city, units, lang, CityFragment.WEATHER_API_KEY)
+                .enqueue(getCallback());
+    }
 
-                    @Override
-                    public void onFailure(Call<WeatherRequest> call, Throwable t) {
-                        Log.e("MyLog", "onFailure: Ошибка соединения", t);  //код в случае ошибки соединения
-                        String message = getResources().getString(R.string.fail_connection);
-                        //создаем диалоговое окно с необходимым нам сообщением
-                        if (getFragmentManager() != null) {
-                            MyDialogFragment.create(message).show(getFragmentManager(), "Exception");
-                        }
+    private void requestRetrofit(Double lat, Double lng, String units, String lang) {
+        weatherRequestByLocation.loadWeather(lat, lng, units, lang, CityFragment.WEATHER_API_KEY)
+                .enqueue(getCallback());
+    }
+
+    private Callback<WeatherRequest> getCallback() {
+        return new Callback<WeatherRequest>() {
+            @Override
+            public void onResponse(Call<WeatherRequest> call, Response<WeatherRequest> response) {
+                if (response.body() != null) {
+                    String temp = String.format(Locale.getDefault(), "%d", response.body().getMain().getTemp());
+                    currentTemperature.setText(temp);
+                    currentHumidity.setText(String.format(Locale.getDefault(), "%d", response.body().getMain().getHumidity()));
+                    currentPressure.setText(String.format(Locale.getDefault(), "%d", response.body().getMain().getPressure()));
+                    windSpeed.setText(String.format(Locale.getDefault(), "%d", response.body().getWind().getSpeed()));
+                    currentCity = String.format(Locale.getDefault(), "%s", response.body().getName());
+                    currentName.setText(currentCity);
+                    //Время восхода и заката приводим к привычному виду
+                    SimpleDateFormat smp = new SimpleDateFormat("HH:mm", Locale.getDefault());
+                    sunrise.setText(String.format(Locale.getDefault(), "%s", smp.format(response.body().getSys().getSunrise() * 1000L)));
+                    sunset.setText(String.format(Locale.getDefault(), "%s", smp.format(response.body().getSys().getSunset() * 1000L)));
+                    //saveHistory(temp);    //неиспользуется после подключения Room
+                    saveHistoryRoom(temp);  //сохранение истории в БД Room
+                    saveCity(); //сохранение текущего города в SharedPreference
+                } else {
+                    Log.e("MyLog", "onResponse: Город не был найден на сервере code=" + response.code() + " message=" + response.message());
+                    String message = getResources().getString(R.string.error_msg_part_1) + currentCity + getResources().getString(R.string.error_msg_part_2);
+                    //создаем диалоговое окно с необходимым нам сообщением
+                    if (getFragmentManager() != null) {
+                        MyDialogFragment.create(message).show(getFragmentManager(), "Exception");
                     }
-                });
+                }
+            }
+
+            @Override
+            public void onFailure(Call<WeatherRequest> call, Throwable t) {
+                Log.e("MyLog", "onFailure: Ошибка соединения", t);  //код в случае ошибки соединения
+                String message = getResources().getString(R.string.fail_connection);
+                //создаем диалоговое окно с необходимым нам сообщением
+                if (getFragmentManager() != null) {
+                    MyDialogFragment.create(message).show(getFragmentManager(), "Exception");
+                }
+            }
+        };
     }
 
     //сохранение истории в БД Room
@@ -356,5 +381,97 @@ public class CityFragment extends Fragment implements Constants {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(CITY, currentCity);
         editor.apply();
+    }
+
+    // Запрашиваем Permission’ы
+    private void requestPermissions() {
+        // Проверим, есть ли Permission’ы, и если их нет, запрашиваем их у пользователя
+        if (ActivityCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            // Запрашиваем координаты
+            requestLocation();
+            Log.d("MyLog", "requestPermissions: requestLocation() - Запрашиваем координаты;");
+        } else {
+            // Permission’ов нет, запрашиваем их у пользователя
+            requestLocationPermissions();
+            Log.d("MyLog", "requestPermissions: requestLocationPermissions() - Запрашиваем Permission’ы у пользователя");
+        }
+    }
+
+    // Запрашиваем координаты
+    private void requestLocation() {
+        // Еще раз прверяем  Permission есди их нет, просто выходим.
+        //Без этой проверки locationManager будет выдавать здесь ошибку
+        if (ActivityCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(Objects.requireNonNull(getActivity()), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            return;
+
+        // Получаем менеджер геолокаций
+        LocationManager locationManager = (LocationManager) Objects.requireNonNull(getActivity()).getSystemService(LOCATION_SERVICE);
+        //Устанавливаем критерий на приблизительное местоположение
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+        // Получаем наиболее подходящий провайдер геолокации по критериям.
+        // Можно и самостоятельно: LocationManager.GPS_PROVIDER, NETWORK_PROVIDER или PASSIVE_PROVIDER.
+        String provider = locationManager.getBestProvider(criteria, true);
+        if (provider != null) {
+            locationManager.requestLocationUpdates(provider, 10000, 10,
+                    new LocationListener() {
+                        @Override
+                        public void onLocationChanged(Location location) {
+                            double latitude = location.getLatitude();    //широта
+                            double longitude = location.getLongitude(); //долгота
+
+                            Log.d("MyLog", "onLocationChanged: latitude" + latitude);
+                            Log.d("MyLog", "onLocationChanged: longitude" + longitude);
+                            //выполняем запрос по координатам
+                            initRetrofit();
+                            requestRetrofit(latitude, longitude, units, lang);
+                            //получив координаты, дальнейшие запросы нам не нужны
+                            locationManager.removeUpdates(this);
+                        }
+
+                        @Override
+                        public void onStatusChanged(String provider, int status, Bundle extras) {
+                        }
+
+                        @Override
+                        public void onProviderEnabled(String provider) {
+                        }
+
+                        @Override
+                        public void onProviderDisabled(String provider) {
+                        }
+                    });
+        }
+    }
+
+    // Запрашиваем Permission’ы для геолокации
+    private void requestLocationPermissions() {
+        if (!ActivityCompat.shouldShowRequestPermissionRationale(Objects.requireNonNull(getActivity()), Manifest.permission.CALL_PHONE)) {
+            // Запрашиваем эти два Permission’а у пользователя
+            ActivityCompat.requestPermissions(Objects.requireNonNull(getActivity()),
+                    new String[]{
+                            Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                    },
+                    PERMISSION_REQUEST_CODE);
+        }
+        Log.d("MyLog", "requestLocationPermissions: запрос");
+    }
+
+
+    // Результат запроса Permission’а у пользователя:
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == PERMISSION_REQUEST_CODE) {   // Проверка соответсвия ответа запросу
+            // проверка ответа
+            if (grantResults.length == 2 &&
+                    (grantResults[0] == PackageManager.PERMISSION_GRANTED || grantResults[1] == PackageManager.PERMISSION_GRANTED)) {
+                // Если любая из пермиссий дана, то запросим координаты
+                requestLocation();
+                Log.d("MyLog", "onRequestPermissionsResult: ответ");
+            }
+        }
     }
 }
