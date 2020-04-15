@@ -53,4 +53,7 @@
     <string name="receiver_title">My Broadcast Receiver</string>
     <string name="low_battery">Low battery</string>
     <string name="network_is_not_connected">Network is not connected</string>
+
+    <string name="my_api_key"></string>
+    <string name="google_map">Google Map</string>
 </resources>
