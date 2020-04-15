@@ -160,11 +160,13 @@ public class BaseActivity extends AppCompatActivity implements Constants, Naviga
                 if (fragment != null) {
                     ft.remove(fragment);
                 }
-                ft.add(R.id.first_fragment, new CityFragment());
+                ft.replace(R.id.first_fragment, new CityFragment());
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                 ft.commit();
                 break;
             case (R.id.nav_start):
-                ft.add(R.id.first_fragment, new MainFragment());
+                ft.replace(R.id.first_fragment, new MainFragment());
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                 ft.addToBackStack("Start");
                 ft.commit();
                 break;
@@ -174,12 +176,19 @@ public class BaseActivity extends AppCompatActivity implements Constants, Naviga
                 break;
             case (R.id.nav_history):
                 ft.replace(R.id.first_fragment, new HistoryFragment());
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                 ft.addToBackStack("Start");
                 ft.commit();
                 break;
             case (R.id.nav_developers):
                 Intent intentDev = new Intent(this, DevelopersActivity.class);
                 startActivity(intentDev);
+                break;
+            case (R.id.google_map):
+                ft.replace(R.id.first_fragment, new GoogleMapFragment());
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                ft.addToBackStack("Start");
+                ft.commit();
                 break;
         }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
