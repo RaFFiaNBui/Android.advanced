@@ -203,13 +203,23 @@ public class CityFragment extends Fragment implements Constants {
         //проверка сети
         checkConnection();
 
-        if (getArguments() == null) {
+        if (getArguments() != null) {
+            initRetrofit();
+            if (getParcel().getCityName() != null) {
+                //установка соединения по средствам Retrofit
+                requestRetrofit(currentCity, units, lang);
+                Log.d("MyLog", "onViewCreated: getParcel().getCityName() != null");
+            }
+            if (getParcel().getLatLng() != null) {
+                double latitude = getParcel().getLatLng().latitude;
+                double longitude = getParcel().getLatLng().longitude;
+                requestRetrofit(latitude, longitude, units, lang);
+                Log.d("MyLog", "onViewCreated: getParcel().getLatLng() != null");
+            }
+        } else {
             //Запрашиваем Permission’ы и координаты
             requestPermissions();
-        } else {
-            //установка соединения по средствам Retrofit
-            initRetrofit();
-            requestRetrofit(currentCity, units, lang);
+            Log.d("MyLog", "onViewCreated: else");
         }
     }
 
@@ -421,9 +431,8 @@ public class CityFragment extends Fragment implements Constants {
                         public void onLocationChanged(Location location) {
                             double latitude = location.getLatitude();    //широта
                             double longitude = location.getLongitude(); //долгота
-
-                            Log.d("MyLog", "onLocationChanged: latitude" + latitude);
-                            Log.d("MyLog", "onLocationChanged: longitude" + longitude);
+                            Log.d("MyLog", "onLocationChanged: latitude " + latitude);
+                            Log.d("MyLog", "onLocationChanged: longitude " + longitude);
                             //выполняем запрос по координатам
                             initRetrofit();
                             requestRetrofit(latitude, longitude, units, lang);
