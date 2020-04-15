@@ -32,6 +32,9 @@
         </activity> <!-- <activity android:name=".SecondActivity" /> -->
         <!-- После перехода на одну активити, данная активити не используется -->
         <activity android:name=".SettingsActivity" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/my_api_key" />
     </application>
 
 </manifest>
