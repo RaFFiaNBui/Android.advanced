@@ -16,6 +16,9 @@
         <item
             android:id="@+id/nav_history"
             android:title="@string/story" />
+        <item
+            android:id="@+id/google_map"
+            android:title="@string/google_map" />
     </group>
 
     <item android:title="@string/communicate">
