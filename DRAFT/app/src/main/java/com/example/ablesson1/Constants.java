@@ -10,4 +10,5 @@ public interface Constants {
     String SHARED_PREFERENCE_KEY = "SharedPreference";
     String MESSAGE = "Message";
     String NETWORK_IS_CONNECTED = "com.example.ablesson1.NETWORK_IS_CONNECTED";
+    int PERMISSION_REQUEST_CODE = 1000;
 }

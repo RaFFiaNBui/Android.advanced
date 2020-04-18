@@ -33,7 +33,8 @@
     <string name="story_array_empty">Your story list is empty</string>
     <string name="settings_save">Settings have been saved</string>
     <string name="navigation_header">Navigation header</string>
-    <string name="start_screen">Start screen</string>
+    <string name="my_location">My location</string>
+    <string name="list_of_cities">List of cities</string>
     <string name="story">Story</string>
     <string name="communicate">Communicate</string>
     <string name="close">Close</string>
@@ -52,4 +53,7 @@
     <string name="receiver_title">My Broadcast Receiver</string>
     <string name="low_battery">Low battery</string>
     <string name="network_is_not_connected">Network is not connected</string>
+
+    <string name="my_api_key"></string>
+    <string name="google_map">Google Map</string>
 </resources>

@@ -15,6 +15,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
@@ -80,6 +81,7 @@ public class BaseActivity extends AppCompatActivity implements Constants, Naviga
                 Snackbar.make(searchText, query, Snackbar.LENGTH_LONG).show();
                 return true;
             }
+
             //Реагирует на нажатие каждой клавиши
             @Override
             public boolean onQueryTextChange(String newText) {
@@ -151,30 +153,44 @@ public class BaseActivity extends AppCompatActivity implements Constants, Naviga
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         switch (item.getItemId()) {
-            case (R.id.nav_Start) :
-                MainFragment mainFragment = new MainFragment();
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.add(R.id.first_fragment, mainFragment);
+            case (R.id.my_location):
+                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.first_fragment);
+                if (fragment != null) {
+                    ft.remove(fragment);
+                }
+                ft.replace(R.id.first_fragment, new CityFragment());
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
                 ft.commit();
                 break;
-            case (R.id.nav_Settings) :
+            case (R.id.nav_start):
+                ft.replace(R.id.first_fragment, new MainFragment());
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                ft.addToBackStack("Start");
+                ft.commit();
+                break;
+            case (R.id.nav_settings):
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivityForResult(intent, SETTINGS_CODE);
                 break;
-            case (R.id.nav_history) :
-                FragmentTransaction ft1 = getSupportFragmentManager().beginTransaction();
-                HistoryFragment historyFragment = new HistoryFragment();
-                ft1.replace(R.id.first_fragment, historyFragment);
-                ft1.addToBackStack("Start");
-                ft1.commit();
+            case (R.id.nav_history):
+                ft.replace(R.id.first_fragment, new HistoryFragment());
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                ft.addToBackStack("Start");
+                ft.commit();
                 break;
-            case (R.id.nav_Developers) :
+            case (R.id.nav_developers):
                 Intent intentDev = new Intent(this, DevelopersActivity.class);
                 startActivity(intentDev);
                 break;
+            case (R.id.google_map):
+                ft.replace(R.id.first_fragment, new GoogleMapFragment());
+                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                ft.addToBackStack("Start");
+                ft.commit();
+                break;
         }
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

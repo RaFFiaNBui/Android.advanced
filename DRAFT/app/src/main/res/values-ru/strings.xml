@@ -34,7 +34,8 @@
     <string name="story_array_empty">Ваш список истории пуст</string>
     <string name="settings_save">Настройки сохранены</string>
     <string name="navigation_header">Navigation header</string>
-    <string name="start_screen">Начальный экран</string>
+    <string name="my_location">Моё местоположение</string>
+    <string name="list_of_cities">Список городов</string>
     <string name="story">История</string>
     <string name="communicate">Communicate</string>
     <string name="close">Закрыть</string>
@@ -53,4 +54,7 @@
     <string name="receiver_title">My Broadcast Receiver</string>
     <string name="low_battery">Низкий заряд батареи</string>
     <string name="network_is_not_connected">Сеть не подключена</string>
+
+    <string name="my_api_key"></string>
+    <string name="google_map">Google Map</string>
 </resources>
