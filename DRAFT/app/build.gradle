@@ -21,6 +21,20 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    flavorDimensions 'version'
+    productFlavors {
+        light {
+            dimension = 'version'
+            versionNameSuffix = '.light'
+            applicationIdSuffix = '.light'
+        }
+
+        full {
+            dimension = 'version'
+            versionNameSuffix = '.full'
+            applicationIdSuffix = '.full'
+        }
+    }
 }
 
 dependencies {
