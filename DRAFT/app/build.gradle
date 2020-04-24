@@ -21,6 +21,20 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    flavorDimensions 'version'
+    productFlavors {
+        light {
+            dimension = 'version'
+            versionNameSuffix = '.light'
+            applicationIdSuffix = '.light'
+        }
+
+        full {
+            dimension = 'version'
+            versionNameSuffix = '.full'
+            applicationIdSuffix = '.full'
+        }
+    }
 }
 
 dependencies {
@@ -36,6 +50,7 @@ dependencies {
     implementation 'android.arch.persistence.room:runtime:1.1.1'
     implementation 'com.google.firebase:firebase-messaging:20.1.5'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    implementation 'com.google.android.gms:play-services-auth:18.0.0'
     annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
