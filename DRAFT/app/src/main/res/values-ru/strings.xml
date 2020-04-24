@@ -57,4 +57,5 @@
 
     <string name="my_api_key"></string>
     <string name="google_map">Google Map</string>
+    <string name="sign_out">Sign out</string>
 </resources>
