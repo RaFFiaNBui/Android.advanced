@@ -55,7 +55,7 @@
     <string name="low_battery">Низкий заряд батареи</string>
     <string name="network_is_not_connected">Сеть не подключена</string>
 
-    <string name="my_api_key"></string>
+    <string name="my_api_key">ВСТАВИТЬ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!</string>
     <string name="google_map">Google Map</string>
     <string name="sign_out">Sign out</string>
 </resources>
